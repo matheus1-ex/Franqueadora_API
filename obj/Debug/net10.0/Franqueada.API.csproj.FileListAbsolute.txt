@@ -32,3 +32,4 @@ C:\Users\julio\OneDrive\Documentos\UnidadeFranqueada\Franqueada.API\obj\Debug\ne
 C:\Users\julio\OneDrive\Documentos\UnidadeFranqueada\Franqueada.API\obj\Debug\net10.0\Franqueada.API.genruntimeconfig.cache
 C:\Users\julio\OneDrive\Documentos\UnidadeFranqueada\Franqueada.API\obj\Debug\net10.0\ref\Franqueada.API.dll
 C:\Users\julio\OneDrive\Documentos\UnidadeFranqueada\Franqueada.API\bin\Debug\net10.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\julio\OneDrive\Documentos\UnidadeFranqueada\Franqueada.API\obj\Debug\net10.0\Franqueada.API.sourcelink.json
