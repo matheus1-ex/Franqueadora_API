@@ -16,5 +16,27 @@ public sealed class LoginResponseDto
 
     public string Token {get; set;}
 
+    /// <summary>
+    /// Campo de Data de Expiração
+    /// </summary>
+    [Required(
+        ErrorMessage = "Este campo é obrigatório para concluir o cadastro."
+    )]
+    public DateTime DatadeExpiracao {get; set;} 
+    
+    /// <summary>
+    /// Campo de Nome de Usuário
+    /// </summary>
+    /// 
+    [Required(
+        ErrorMessage = "Esse campo é obrigatório"
+    )]
+    [StringLength(
+        MinimumLength = 5,
+        maximumLenght = 10,
+        ErrorMessage = "5 a 10 caracteres aceitos para esse campo"
+    )]
+
+    public string NomeUsuario {get; set;}
 
 }
