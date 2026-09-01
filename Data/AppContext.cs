@@ -18,6 +18,21 @@ public sealed class AppContext : DbContext
     /// </summary>
     public DbSet<Perfil> Perfis {get; set;}
 
+    /// <summary>
+    /// Tabela de Unidades
+    /// </summary>
+    public DbSet<Unidade> Unidades {get; set;}
+
+    /// <summary>
+    /// Tabela de Franquias
+    /// </summary>
+    public DbSet<Franquia> Franquias {get; set;}
+
+    /// <summary>
+    /// Tabela de Franqueadoras
+    /// </summary>
+    public DbSet<Franqueadora> Franqueadoras {get; set;}
+  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -52,8 +67,42 @@ public sealed class AppContext : DbContext
                 entidade.Property(usuario => usuario.Nome).HasMaxLenght(50).IsRequired();
             }
         );
-    }
+        // ==========================
+        // Unidades
+        // ==========================
+        modelBuilder.Entity<Unidades>(
+          entidade =>
+          {
+            entidade.ToTable("Unidades");
+            entidade.HasKey(unidade => unidade.Id);
+            entidade.Property(unidade => unidade.Nome_Unidade).HasMaxLenght(100).IsRequired();
+            entidade.Property(unidade => unidade.Cod_Identificador).IsUnique();
 
+            entidade.Property(unidade => unidade.Endereco).HasMax(500).IsRequired();
+
+          }
+        );
+        // ========================
+        // Franquias
+        // ========================
+        modelBuilder.Entity<Franquias>(
+          entidade =>
+          {
+            entidade.ToTable("Franquias");
+            
+            entidade.HasKey(franquia => franquia.Id_Franquia);
+            
+            entidade.Property(franquia => franquia.Nome_Marca).IsRequired().HasMax(200);
+
+            entidade.Property(franquia => franquia.Cnpj).HasMax(20).IsRequired();
+
+            entidade.Property(franquia => franquia.StatusAtivo);
+          }
+        );
+        // ====================
+        // Franqueadoras
+        // ====================
+    }
 
 
 
