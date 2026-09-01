@@ -4,16 +4,9 @@ namespace Franqueada.API.DTOs;
 public sealed class LoginResponseDto
 {
     ///<summary>
-    /// Campo de Token de acesso
+    /// Token Gerado JWT
     /// </summary>
-    [Required(
-        ErrorMessage = "Por favor, digite seu código de acesso para continuar."
-    )]
-    [StringLength(
-        MinimumLength = 19,
-        ErrorMessage = "O código precisa ter pelo menos 19 dígitos. Dá uma conferida!"
-    )]
-
+    /// 
     public string Token {get; set;}
 
     /// <summary>
@@ -25,18 +18,17 @@ public sealed class LoginResponseDto
     public DateTime DatadeExpiracao {get; set;} 
     
     /// <summary>
-    /// Campo de Nome de Usuário
+    /// Campo de Usuário
     /// </summary>
     /// 
     [Required(
-        ErrorMessage = "Esse campo é obrigatório"
+        ErrorMessage = "Esse campo é obrigatório."
     )]
     [StringLength(
-        MinimumLength = 5,
-        maximumLenght = 10,
-        ErrorMessage = "5 a 10 caracteres aceitos para esse campo"
+        maximumLenght = 50,
+        ErrorMessage = "Esse campo é obigatório."
     )]
 
-    public string NomeUsuario {get; set;}
+    public string Nome {get; set;}
 
 }

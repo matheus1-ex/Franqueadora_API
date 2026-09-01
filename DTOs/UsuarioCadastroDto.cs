@@ -12,8 +12,8 @@ public sealed class UsuarioCadastroDto
     )]
     [StringLength(
         MinimumLength = 5,
-        maximumlenght = 10,
-        ErrorMessage = "No minímo 5 caracteres até 10 caracteres"
+        maximumlenght = 50,
+        ErrorMessage = "No minímo 5 caracteres"
     )]
 
     public string Nome {get; set;}
@@ -40,6 +40,7 @@ public sealed class UsuarioCadastroDto
         ErrorMessage = "Informe sua senha para continuar."
     )]
     [StringLength(
+        maximumLength: 250,
         MinimumLength = 8,
         ErrorMessage = "No minímo 8 caracteres"
     )]

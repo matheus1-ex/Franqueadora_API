@@ -9,8 +9,8 @@ public sealed class LoginRequestDto
         ErrorMessage = "Email é obrigatório"
     )]
     [StringLength(
-        maximumLength: 500,
-        ErrorMessage = "Até no máximo 500 caracteres, não pode deixar em branco"
+        maximumLength: 250,
+        ErrorMessage = "Até no máximo 250 caracteres, não pode deixar em branco"
     )]
     public string Email {get; set;}
 
