@@ -4,7 +4,7 @@ public sealed class Franquia
   public int Id_Franquia {get; set;}
   public string Nome_Marca {get; set;}
   public string Cnpj {get; set;}
-  public bool StatusAtivo {get; set;} = true
+  public bool StatusAtivo {get; set;} = true;
 
   // Chave estrangeira para Franqueadora
   public int FranqueadoraId {get; set;}

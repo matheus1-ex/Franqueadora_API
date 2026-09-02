@@ -3,8 +3,8 @@ public sealed class Franqueadora
 {
   public int Id_Franqueadora {get; set;}
   public string Razao_Social {get; set;}
-  public string CNPJ {get; set;}
-  public bool StatusAtivo {get; set;} = true
+  public string Cnpj {get; set;}
+  public bool StatusAtivo {get; set;} = true;
 
   // Uma Franqueadora possui varias franquias
   public ICollection<Franquia> Franquias {get; set; } = new List<Franquia>();

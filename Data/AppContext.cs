@@ -96,12 +96,26 @@ public sealed class AppContext : DbContext
 
             entidade.Property(franquia => franquia.Cnpj).HasMax(20).IsRequired();
 
-            entidade.Property(franquia => franquia.StatusAtivo);
+            entidade.Property(franquia => franquia.StatusAtivo).HasdefaultValue(true);
           }
         );
         // ====================
         // Franqueadoras
         // ====================
+        modelBuilder.Entity<Franqueadas>(
+          entidade =>
+          {
+            entidade.ToTable("Franqueadoras");
+            
+            entidade.HasKey(franqueadora => franqueadora.Id_Franqueadora);
+
+            entidade.Property(franqueadora => franqueadora.Razao_Social).IsRequired().HasMax(200).IsUnique();
+
+            entidade.Property(franqueadora => franqueadora.Cnpj).HasMax(20).IsRequired();
+
+            entidade.Property(franqueadora => franqueadora.StatusAtivo).HasDefaultValue(true);
+          }
+        );
     }
 
 
