@@ -6,8 +6,7 @@ namespace Franqueada.API.Data;
 
 public sealed class AppContext : DbContext
 {
-    public AppContext(DbContextOptions<AppContext> options) : base(options) {}
-
+    public AppContext(DbContextOptions<AppContext> (options) : base(options) {
     /// <summary>
     /// Tabela de Usuários
     /// </summary>
@@ -115,10 +114,8 @@ public sealed class AppContext : DbContext
 
             entidade.Property(franqueadora => franqueadora.StatusAtivo).HasDefaultValue(true);
           }
-        );
+          );
     }
-
-
-
+    }
     
 } 
