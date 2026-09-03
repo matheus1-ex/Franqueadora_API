@@ -22,6 +22,7 @@ public class UnidadeController : ControllerBase
     // ========================
     // GET api/unidades/
     // ========================
+    // Responsável por buscar e filtrar a unidade por status e nome
 
     [HttpGet]
     public async Task<ActionResult<IReadOnlyCollection<UnidadeResponseDto>>> ObterTodas(
@@ -40,6 +41,7 @@ public class UnidadeController : ControllerBase
     // ========================
     // GET api/unidades/{id}
     // ========================
+    // Responsavél por buscar unidade específica por ID
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Unidade>> ObterId(
@@ -67,7 +69,7 @@ public class UnidadeController : ControllerBase
     // ========================
     // POST api/unidades/
     // ========================
-    // Responsável por adicionar as unidades
+    // Responsável por cadastrar uma nova unidade
 
     [HttpPost]
     public async Task<ActionResult<Unidade>> Adicionar(
@@ -85,8 +87,20 @@ public class UnidadeController : ControllerBase
             unidadeCriada
         );
     }
-
-
-
-
+  // ===========================
+  // PATCH api/unidades/{id}/status
+  // ===========================
+  // Responsavel por alternar o status de ativo e inativo
+  [HttpPatch("{id:int}/status")]
+  public async Task<IActionResult> AlternarStatus(
+    [FromRoute] int id,
+    CancellationToken cancellationtoken
+  )
+  {
+    var sinalVerde = await _unidadeService.AtualizarStatusAsync(id, cancellationtoken);
+    if (!sinalVerde)
+    {
+      retrun 
+    }
+  }
 }

@@ -17,5 +17,5 @@ public interface IUnidadeService
 
     Task<UnidadeResponsetDto> CriarAsync(UnidadeResquestDto criar, CancellationToken cancellationToken);
 
-    Task AtualizarStatusAtivo(int id, CancellationToken cancellationToken);
+    Task AtualizarStatusAsync(int id, CancellationToken cancellationToken);
 }
