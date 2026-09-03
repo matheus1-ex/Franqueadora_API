@@ -1,7 +1,7 @@
 using Franqueada.API.DTOs;
 using Franqueada.API.Models;
 
-namespace Franqueada.API.IAuthService;
+namespace Franqueada.API.Services;
 
 public interface IAuthService
 {

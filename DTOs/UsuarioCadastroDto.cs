@@ -16,7 +16,7 @@ public sealed class UsuarioCadastroDto
         ErrorMessage = "No minímo 5 caracteres"
     )]
 
-    public string Nome {get; set;}
+    public string Nome {get; set;} = string.Empty;
 
     /// <summary>
     /// Campo de Email
@@ -30,7 +30,7 @@ public sealed class UsuarioCadastroDto
         ErrorMessage = "No máximo 250 caracteres."
     )]
 
-    public string Email {get; set;}
+    public string Email {get; set;} = string.Empty;
 
     /// <summary>
     /// Campo de Senha
@@ -45,5 +45,5 @@ public sealed class UsuarioCadastroDto
         ErrorMessage = "No minímo 8 caracteres"
     )]
 
-    public string Senha {get; set;}
+    public string Senha {get; set;} = string.Empty;
 }

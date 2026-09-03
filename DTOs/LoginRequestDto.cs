@@ -12,7 +12,7 @@ public sealed class LoginRequestDto
         maximumLength: 250,
         ErrorMessage = "Até no máximo 250 caracteres, não pode deixar em branco"
     )]
-    public string Email {get; set;}
+    public string Email {get; set;} = string.Empty;
 
     /// <summary>
     /// Campo da Senha
@@ -27,6 +27,6 @@ public sealed class LoginRequestDto
         maximumLength: 200,
         ErrorMessage = "Ops! Digite uma senha com no mínimo 8 caracteres"
     )]
-    public string Senha {get; set;}
+    public string Senha {get; set;} = string.Empty;
     
 }

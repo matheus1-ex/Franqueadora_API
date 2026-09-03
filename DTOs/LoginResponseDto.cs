@@ -10,25 +10,16 @@ public sealed class LoginResponseDto
     public string Token {get; set;}
 
     /// <summary>
-    /// Campo de Data de Expiração
+    /// Data de Expiração
     /// </summary>
-    [Required(
-        ErrorMessage = "Este campo é obrigatório para concluir o cadastro."
-    )]
-    public DateTime DatadeExpiracao {get; set;} 
+    public DateTime? DatadeExpiracao {get; set;} 
     
     /// <summary>
-    /// Campo de Usuário
+    /// Usuário
     /// </summary>
-    /// 
-    [Required(
-        ErrorMessage = "Esse campo é obrigatório."
-    )]
-    [StringLength(
-        maximumLenght = 50,
-        ErrorMessage = "Esse campo é obigatório."
-    )]
-
     public string Nome {get; set;}
+
+    [EnumDataType(typeof(StatusAtivos), ErrorMessage = "Status do usuário inválido.")]
+    public StatusAtivos statusAtivos {get; set;}
 
 }

@@ -75,10 +75,12 @@ public sealed class AppContext : DbContext
           {
             entidade.ToTable("Unidades");
             entidade.HasKey(unidade => unidade.Id);
+
             entidade.Property(unidade => unidade.Nome_Unidade).HasMaxLenght(100).IsRequired();
+
             entidade.Property(unidade => unidade.Cod_Identificador).IsUnique();
 
-            entidade.Property(unidade => unidade.Endereco).HasMax(500).IsRequired();
+            entidade.Property(unidade => unidade.Endereco).HasMax(250).IsRequired();
 
           }
         );
@@ -117,8 +119,5 @@ public sealed class AppContext : DbContext
           }
         );
     }
-
-
-
     
 } 
