@@ -99,8 +99,6 @@ public class UnidadeController : ControllerBase
   {
     var sinalVerde = await _unidadeService.AtualizarStatusAsync(id, cancellationtoken);
     if (!sinalVerde)
-    {
-      retrun 
-    }
+        return NotFound(new {mensagem = $"Unidade com ID {id} não foi encontrada para alterar o status."});
   }
 }
