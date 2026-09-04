@@ -1,4 +1,4 @@
-namespace Franqueada.API.DTOs;
+namespace Franqueada_API.DTOs;
 
 public sealed class ProdutoResponseDto
 {

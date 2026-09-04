@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
-namespace Franqueada.API.DTOs;
+namespace Franqueada_API.DTOs;
 public sealed class LoginResponseDto
 {
     ///<summary>

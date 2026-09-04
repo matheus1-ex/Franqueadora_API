@@ -1,7 +1,7 @@
-using Franqueadora.API.Models;
-using Franqueadora.API.DTOs;
+using Franqueadora_API.Models;
+using Franqueadora_API.DTOs;
 
-namespace Franqueadora.API.Services;
+namespace Franqueadora_API.Services;
 
 public interface IUnidadeService
 {

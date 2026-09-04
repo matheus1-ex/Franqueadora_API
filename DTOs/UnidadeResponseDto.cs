@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Franqueada.API.Models;
-namespace Franqueada.API.DTOs;
+using Franqueada_API.Models;
+namespace Franqueada_API.DTOs;
 public sealed class UnidadeResponseDto
 {
     // Mostra o id da unidade

@@ -1,4 +1,4 @@
-namespace Franqueada.API.Models;
+namespace Franqueada_API.Models;
 public enum StatusAtivos
 {
     Ativado = 1,

@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
+namespace Franqueadora_API.DTOs;
 public sealed class LoginRequestDto
 {
     /// <summary>

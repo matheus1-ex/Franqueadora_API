@@ -1,8 +1,8 @@
 using System.Data.Common;
-using Franqueada.API.Models;
+using Franqueada_API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Franqueada.API.Data;
+namespace Franqueada_API.Data;
 
 public sealed class AppContext : DbContext
 {

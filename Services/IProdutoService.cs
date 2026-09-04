@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
-using Franqueada.API.DTOs;
-using Franqueada.API.Models;
+using Franqueada_API.DTOs;
+using Franqueada_API.Models;
 
-namespace Franqueada.API.Services;
+namespace Franqueada_API.Services;
 
 public interface IProdutoService
 {
