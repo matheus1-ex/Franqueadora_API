@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Franqueada_API.DTOs;
+namespace Franqueada.API.DTOs;
 public sealed class ProdutoRequestDto
 {
     [Required(ErrorMessage = "O nome do produto é obrigatório.")]
@@ -18,5 +18,5 @@ public sealed class ProdutoRequestDto
     [StringLength(50, ErrorMessage = "A categoria deve ter no máximo 50 caracteres.")]
     public string Categoria {get; set;} = string.Empty;
 
-    public bool Status {get; set;}
+    public string Status {get; set;}
 }

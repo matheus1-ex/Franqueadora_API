@@ -1,4 +1,4 @@
-namespace Franqueadora_API.Models;
+namespace Franqueadora.API.Models;
 public sealed class Unidade
 {
   public int Id_Und {get; set;}

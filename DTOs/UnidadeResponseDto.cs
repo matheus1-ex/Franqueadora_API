@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using Franqueada_API.Models;
-namespace Franqueada_API.DTOs;
+using Franqueada.API.Models;
+namespace Franqueada.API.DTOs;
 public sealed class UnidadeResponseDto
 {
     // Mostra o id da unidade
@@ -16,7 +16,7 @@ public sealed class UnidadeResponseDto
     public string Endereco {get; set;}
     
     // Mostra o status da unidade se ela está ativada ou não
-    [EnumDataType(typeof(StatusAtivos), ErrorMessage = "Status da Unidade inválida.")]
-    public StatusAtivos statusAtivos {get; set;}
+    [EnumDataType(typeof(StatusAtivo), ErrorMessage = "Status da Unidade inválida.")]
+    public StatusAtivo status {get; set;}
 
 }

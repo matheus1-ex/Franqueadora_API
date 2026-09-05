@@ -1,11 +1,11 @@
 using Microsoft.EntityFrameWorkCore;
-using Franqueadora_API.Models;
-using Franqueadora_API.DTOs;
-using Franqueadora_API.Data;
-using Franqueadora_API.Core.Entites;
+using Franqueadora.API.Models;
+using Franqueadora.API.DTOs;
+using Franqueadora.API.Data;
+using Franqueadora.API.Core.Entites;
 
 
-namespace Franqueadora_API.Services;
+namespace Franqueadora.API.Services;
 
 public class ProdutoService : IProdutoService
 {
@@ -25,18 +25,21 @@ public class ProdutoService : IProdutoService
   {
     // Inicia a consulta como IQueryable (nenhum SQL foi executado até aqui)
     var query = _contexto.Produtos.AsNoTracking().AsQueryable();
-
     // Aplica o filtro de Nome se foi informado (busca insensível a maiúsculas/minúsculas)
     if (!string.IsNullOfWhiteSpace(nome))
-      query = query.Where(produto => produto.Nome.ToLower().Contains(nome.ToLower()))
-
+      query = query.Where(produto => produto.Nome.ToLower().Contains(nome.ToLower()));
+      
     // Aplica o filtro de Categoria se foi informado
     if (!string.IsNullOfWhiteSpace(categoria))
-      query = query.Where(produto => produto.Categoria.ToLower() == categoria.ToLower())
+    {
+      query = query.Where(produto => produto.Categoria.ToLower() == categoria.ToLower());
+    };
 
     // Aplica o filtro de Status se foi informado
     if (status.HasValue)
-      query = query.Where(produto => produto.Status == status.Value)
+      {
+        query = query.Where(produto => produto.Status == status.Value);
+      }
 
     // Executa a consulta acumulada no banco de dados de uma só vez
     var produtos = await query.ToListAsync(cancellationtoken);
@@ -56,7 +59,7 @@ public class ProdutoService : IProdutoService
 
   public async Task<ProdutoRequestDto> CriarAsync(ProdutoRequestDto dto, CancellationToken cancellationtoken)
   {
-    new Produto {
+    var produto = new Produto {
       Nome = dto.Nome,
       Descricao = dto.Descricao,
       Preco_Base = dto.PrecoBase,
@@ -64,9 +67,8 @@ public class ProdutoService : IProdutoService
       Status = dto.Status
     };
 
-    _contexto.Produtos.Add(Produto produto);
+    _contexto.Produtos.Add(produto);
     await _contexto.SaveChangesAsync(cancellationtoken);
-
     return MapToResponseDto(produto);
   }
 
@@ -87,5 +89,32 @@ public class ProdutoService : IProdutoService
     return true;
     
   }
+
+  public async Task<bool> AtualizarStatusAsync (int id, CancellationToken cancellationToken = default)
+  {
+    var produto = await _contexto.Produtos.FindAsync(new object[] {id}, cancellationToken);
+
+    if (produto == null)
+    { return null; }
+
+    produto.Status = !produto.Status;
+
+    await _contexto.SaveToChangesAsync(cancellationToken);
+    return true;
+  }
   
+  //Método auxiliar para conversão de Entidade para DTO de Resposta
+  private static ProdutoResponseDto MapToResponseDto(Produto produto)
+  {
+    return new ProdutoResponseDto
+    {
+      id = produto.Id,
+      nome = produto.Nome,
+      descricao = produto.Descricao,
+      preco = produto.PrecoBase,
+      categoria = produto.Categoria,
+      status = produto.Status
+    };
+    
+  }
 }

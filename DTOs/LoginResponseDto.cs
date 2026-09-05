@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
-namespace Franqueada_API.DTOs;
+namespace Franqueada.API.DTOs;
 public sealed class LoginResponseDto
 {
     ///<summary>
@@ -19,7 +19,7 @@ public sealed class LoginResponseDto
     /// </summary>
     public string Nome {get; set;}
 
-    [EnumDataType(typeof(StatusAtivos), ErrorMessage = "Status do usuário inválido.")]
-    public StatusAtivos statusAtivos {get; set;}
+    [EnumDataType(typeof(StatusAtivo), ErrorMessage = "Status do usuário inválido.")]
+    public StatusAtivo status {get; set;}
 
 }

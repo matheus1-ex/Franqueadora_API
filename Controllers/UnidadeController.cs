@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using Franqueada_API.Models;
-using Franqueada_API.DTOs;
-using Franqueada_API.Services;
+using Franqueada.API.Models;
+using Franqueada.API.DTOs;
+using Franqueada.API.Services;
 
 namespace Franqueada_API.Controller;
 

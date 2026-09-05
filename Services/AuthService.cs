@@ -1,15 +1,15 @@
-using Franqueada_API.DTOs;
-using Franqueada_API.Data;
-using Franqueada_API.Models;
+using Franqueada.API.DTOs;
+using Franqueada.API.Data;
+using Franqueada.API.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using System.Security.AccessControl;
 
-namespace Franqueada_API.Services;
+namespace Franqueada.API.Services;
 
-public class AuthService : IAuthService
+public sealed class AuthService : IAuthService
 {
     private readonly AppContext _contexto;
 

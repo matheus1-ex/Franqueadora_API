@@ -1,7 +1,8 @@
-using Franqueada_API.DTOs;
-using Franqueada_API.Models;
+using System.Linq.Expressions;
+using Franqueada.API.DTOs;
+using Franqueada.API.Models;
 
-namespace Franqueada_API.Services;
+namespace Franqueada.API.Services;
 
 public interface IAuthService
 {
@@ -41,7 +42,7 @@ public interface IAuthService
         CancellationToken cancellationToken
     );
 
-
+    Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default);
 
 
 }

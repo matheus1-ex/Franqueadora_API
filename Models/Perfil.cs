@@ -1,4 +1,4 @@
-namespace Franqueada_API.Models;
+namespace Franqueada.API.Models;
 
 public sealed class Perfil
 {

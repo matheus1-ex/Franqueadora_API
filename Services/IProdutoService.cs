@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
-using Franqueada_API.DTOs;
-using Franqueada_API.Models;
+using Franqueada.API.DTOs;
+using Franqueada.API.Models;
 
-namespace Franqueada_API.Services;
+namespace Franqueada.API.Services;
 
 public interface IProdutoService
 {
@@ -20,5 +20,7 @@ public interface IProdutoService
     Task<bool> AtualizarAsync (int id, ProdutoRequestDto dto, CancellationToken cancellationToken = default);
 
     Task<bool> AlternarStatusAsync(int id, CancellationToken cancellationToken = default); 
+
+    Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default);
 
 }

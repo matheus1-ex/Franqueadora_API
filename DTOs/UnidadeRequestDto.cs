@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Franqueada_API.DTOs;
+namespace Franqueada.API.DTOs;
 public sealed class UnidadeRequestDto
 {
     /// <summary>

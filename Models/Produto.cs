@@ -1,4 +1,4 @@
-namespace Franqueadora_API.Models;
+namespace Franqueadora.API.Models;
 public sealed class Produto
 {
   public int Id_Produto {get; set;}
@@ -6,5 +6,5 @@ public sealed class Produto
   public string Descricao {get; set;}
   public double Preco {get; set;}
   public string Categoria {get; set;}
-  public bool Status {get; set;} = true;
+  public bool Status {get; set;} = StatusAtivo.Desativado;
 }

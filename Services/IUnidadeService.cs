@@ -1,7 +1,8 @@
-using Franqueadora_API.Models;
-using Franqueadora_API.DTOs;
+using System.Linq.Expressions;
+using Franqueadora.API.Models;
+using Franqueadora.API.DTOs;
 
-namespace Franqueadora_API.Services;
+namespace Franqueadora.API.Services;
 
 public interface IUnidadeService
 {
@@ -18,4 +19,6 @@ public interface IUnidadeService
     Task<UnidadeResponsetDto> CriarAsync(UnidadeResquestDto criar, CancellationToken cancellationToken);
 
     Task AtualizarStatusAsync(int id, CancellationToken cancellationToken);
+
+    Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default);
 }

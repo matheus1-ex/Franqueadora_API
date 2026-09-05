@@ -1,8 +1,8 @@
 using System.Data.Common;
-using Franqueada_API.Models;
+using Franqueada.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Franqueada_API.Data;
+namespace Franqueada.API.Data;
 
 public sealed class AppContext : DbContext
 {
@@ -32,6 +32,11 @@ public sealed class AppContext : DbContext
     /// Tabela de Franqueadoras
     /// </summary>
     public DbSet<Franqueadora> Franqueadoras {get; set;}
+
+    /// <summary>
+    /// Tabela de Produtos
+    /// </summary>
+    public DbSet<Produto> Produtos {get; set;}
   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -98,7 +103,7 @@ public sealed class AppContext : DbContext
 
             entidade.Property(franquia => franquia.Cnpj).HasMax(20).IsRequired();
 
-            entidade.Property(franquia => franquia.StatusAtivo).HasdefaultValue(true);
+            entidade.HasIndex(franquia => franquia.Status);
           }
         );
         // ====================
@@ -115,7 +120,27 @@ public sealed class AppContext : DbContext
 
             entidade.Property(franqueadora => franqueadora.Cnpj).HasMax(20).IsRequired();
 
-            entidade.Property(franqueadora => franqueadora.StatusAtivo).HasDefaultValue(true);
+            entidade.HasIndex(franqueadora => franqueadora.Status);
+          }
+        );
+
+        // ====================
+        // Produtos
+        // ====================
+        modelBuilder.Entity<Produtos>(
+          entidade =>
+          {
+            entidade.ToTable("Produtos");
+            
+            entidade.HasKey(produto => franqueadora.Id_Produto);
+
+            entidade.Property(produto => franqueadora.NomeProduto).IsRequired().HasMax(100).IsUnique();
+
+            entidade.Property(produto => franqueadora.Preco).IsRequired().HasPrecision(18, 2);
+
+            entidade.Property(produto => franqueadora.Categoria).IsRequired().HasMax(50).IsUnique();
+
+            entidade.HasIndex(produto => franqueadora.Status);
           }
         );
     }
