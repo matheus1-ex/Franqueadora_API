@@ -16,7 +16,7 @@ public class UnidadeService : IUnidadeService
 
         // Listagem com filtros de Nome e Status
         public async Task<IReadOnlyCollection<UnidadeResponseDto>> ObterTodasAsync(
-            bool? status, 
+            StatusAtivo? status, 
             string? nome, 
             CancellationToken cancellationToken = default)
         {
@@ -29,12 +29,13 @@ public class UnidadeService : IUnidadeService
 
             if (status.HasValue)
             {
-                query = query.Where(u => u.StatusAtivo == status.Value);
+                bool statusBool = status.Value == StatusAtivo.Ativado;
+                query = query.Where(unidade => unidade.StatusAtivo = status.Value == statusBool);
             }
 
             var unidades = await query.ToListAsync(cancellationToken);
 
-            return unidades.Select(u => MapToResponseDto(u)).ToList().AsReadOnly();
+            return unidades.Select(unidade => MapToResponseDto(unidade)).ToList().AsReadOnly();
         }
 
         // Busca por ID
@@ -69,14 +70,14 @@ public class UnidadeService : IUnidadeService
             return MapToResponseDto(novaUnidade);
         }
 
-        // Alternar Status (Ativar / Inativar)
+        // Alternar Status (Ativado / Desativado)
         public async Task<bool> AlternarStatusAtivoAsync(int id, CancellationToken cancellationToken = default)
         {
             var unidade = await _contexto.Unidades.FindAsync(new object[] { id }, cancellationToken);
 
             if (unidade == null) return false;
 
-            unidade.StatusAtivos = !unidade.StatusAtivos; // Inverte o status atual
+            unidade.StatusAtivo = !unidade.StatusAtivo; // Inverte o status atual
 
             await _contexto.SaveChangesAsync(cancellationToken);
             return true;

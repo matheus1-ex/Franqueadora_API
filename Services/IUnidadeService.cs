@@ -9,6 +9,7 @@ public interface IUnidadeService
     Task<IEnumerable<UnidadeResponseDto>> ObterTodasAsync(
         Nome_Unidade? nome_Unid,
         int id,
+        StatusAtivo? status,
         Cod_Identificar? cod_Identificar,
         Endereco? endereco,
         CancellationToken cancellationToken

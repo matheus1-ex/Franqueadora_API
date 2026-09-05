@@ -132,15 +132,15 @@ public sealed class AppContext : DbContext
           {
             entidade.ToTable("Produtos");
             
-            entidade.HasKey(produto => franqueadora.Id_Produto);
+            entidade.HasKey(produto => produto.Id_Produto);
 
-            entidade.Property(produto => franqueadora.NomeProduto).IsRequired().HasMax(100).IsUnique();
+            entidade.Property(produto =>  produto.NomeProduto).IsRequired().HasMax(100).IsUnique();
 
-            entidade.Property(produto => franqueadora.Preco).IsRequired().HasPrecision(18, 2);
+            entidade.Property(produto => produto.Preco).IsRequired().HasPrecision(18, 2);
 
-            entidade.Property(produto => franqueadora.Categoria).IsRequired().HasMax(50).IsUnique();
+            entidade.Property(produto => produto.Categoria).IsRequired().HasMax(50).IsUnique();
 
-            entidade.HasIndex(produto => franqueadora.Status);
+            entidade.HasIndex(produto => produto.Status);
           }
         );
     }
