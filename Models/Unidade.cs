@@ -1,10 +1,11 @@
-namespace Franqueadora.API.Models;
+namespace Franqueada.API.Models;
 public sealed class Unidade
 {
   public int Id_Und {get; set;}
-  public string Nome_Unidade {get; set;}
+  public string Nome_Unidade {get; set;} = string.Empty;
   public string Cod_Identificador {get; set;}
-  public string Endereco {get; set;}
+  public StatusAtivo Status {get; set;} = StatusAtivo.Desativado;
+  public string Endereco {get; set;} = string.Empty;
 
   //Chave estrangeira para Franquia
   public int FranquiaID {get; set;}

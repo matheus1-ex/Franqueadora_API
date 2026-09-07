@@ -140,7 +140,7 @@ public sealed class AppContext : DbContext
 
             entidade.Property(produto => produto.Categoria).IsRequired().HasMax(50).IsUnique();
 
-            entidade.HasIndex(produto => produto.Status);
+            entidade.Property(produto => produto.Status).IsRequired().HasDefaultValue(false);
           }
         );
     }

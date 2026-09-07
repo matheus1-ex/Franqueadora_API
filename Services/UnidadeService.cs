@@ -16,26 +16,34 @@ public class UnidadeService : IUnidadeService
 
         // Listagem com filtros de Nome e Status
         public async Task<IReadOnlyCollection<UnidadeResponseDto>> ObterTodasAsync(
-            StatusAtivo? status, 
+            StatusAtivo? status,
+            string? busca,
             string? nome, 
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken)
         {
             var query = _contexto.Unidades.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(nome))
             {
-                query = query.Where(u => u.NomeUnidade.ToLower().Contains(nome.ToLower()));
+                query = query.Where(unidade => unidade.Nome_Unidade.ToLower().Contains(nome.ToLower()));
             }
 
             if (status.HasValue)
             {
-                bool statusBool = status.Value == StatusAtivo.Ativado;
-                query = query.Where(unidade => unidade.StatusAtivo = status.Value == statusBool);
+                query = query.Where(unidade => unidade.StatusAtivo = status.Value);
             }
 
-            var unidades = await query.ToListAsync(cancellationToken);
+            // Busca pelo Nome ou Código Identificador
+            if (!string.IsNullOrWhiteSpace(busca))
+            string termo = busca.Trim();
+            query = query.Where(
+                unidade => unidade.Nome_Unidade.Contains(termo) || unidade.Cod_Identificador.Contains(busca)
+            );
 
-            return unidades.Select(unidade => MapToResponseDto(unidade)).ToList().AsReadOnly();
+            // Execução do banco SQL
+            List<Unidade> unidades = await query.OrderByDescending(unidade => unidade.Id_Und).ToListAsync(cancellationtoken);
+
+            return unidades.Select(unidades => MapToResponseDto(unidade)).ToList().AsReadOnly();
         }
 
         // Busca por ID
@@ -58,7 +66,7 @@ public class UnidadeService : IUnidadeService
                 Nome_Unidade = dto.Nome_Unidade,
                 Endereco = dto.Endereco,
                 FranquiaId = dto.FranquiaId,
-                StatusAtivos = true, // Toda unidade nasce ativa
+                Status = statusAtivo.Ativado,
                 
                 // Regra de Negócio: Geração do Código Único
                 Cod_Identificador = $"UNI-{Guid.NewGuid().ToString().Substring(0, 8).ToUpper()}"
@@ -77,7 +85,7 @@ public class UnidadeService : IUnidadeService
 
             if (unidade == null) return false;
 
-            unidade.StatusAtivo = !unidade.StatusAtivo; // Inverte o status atual
+            unidade.StatusAtivo = !unidade.StatusAtivo;
 
             await _contexto.SaveChangesAsync(cancellationToken);
             return true;
@@ -92,7 +100,7 @@ public class UnidadeService : IUnidadeService
                 nome = unidade.Nome_Unidade,
                 endereco = unidade.Endereco,
                 cod_identificador = unidade.Cod_Identificador,
-                status = unidade.StatusAtivos,
+                status = unidade.Status.ToString(),
                 franquiaId = unidade.FranquiaId
             };
         }

@@ -1,4 +1,4 @@
-namespace Franqueadora.API.Models;
+namespace Franqueada.API.Models;
 public sealed class Franqueadora
 {
   public int Id_Franqueadora {get; set;}

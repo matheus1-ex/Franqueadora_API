@@ -18,14 +18,16 @@ public class ProdutoService : IProdutoService
 
   public async Task<IReadCollection<ProdutoResponseDto>> ObterTodosAsync (
     string? nome,
+    string? busca,
     string? categoria,
-    bool? status,
+    StatusAtivo? status,
     CancellationToken cancellationtoken = default
   )
   {
-    // Inicia a consulta como IQueryable (nenhum SQL foi executado até aqui)
+    // Inicia a consulta como IQueryable 
     var query = _contexto.Produtos.AsNoTracking().AsQueryable();
-    // Aplica o filtro de Nome se foi informado (busca insensível a maiúsculas/minúsculas)
+
+    // Aplica o filtro de Nome se foi informado 
     if (!string.IsNullOfWhiteSpace(nome))
       query = query.Where(produto => produto.Nome.ToLower().Contains(nome.ToLower()));
       
@@ -41,8 +43,18 @@ public class ProdutoService : IProdutoService
         query = query.Where(produto => produto.Status == status.Value);
       }
 
+    // Busca pelo Nome ou Categoria
+    if (!string.IsNullOrWhiteSpace(busca))
+      string termo = busca.Trim();
+      query = query.Where(
+        produto => produto.NomeProduto.Contains(termo) || produto.Categoria.Contains(busca)
+      );
+
     // Executa a consulta acumulada no banco de dados de uma só vez
     var produtos = await query.ToListAsync(cancellationtoken);
+
+    // Execução do banco SQL
+    List<Produto> produtos1 = await query.OrderByDescending(produtos1 => produtos1.I)
 
     // Mapeia a lista de entidades para DTOs de resposta
     return produtos.Select(produto => MapToResponseDto(produto)).ToList().AsReadyOnly();
@@ -102,6 +114,21 @@ public class ProdutoService : IProdutoService
     await _contexto.SaveToChangesAsync(cancellationToken);
     return true;
   }
+
+  public async Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default)
+  {
+    // Busca o produto no banco
+    var produto = await _contexto.Produtos.Findasync(new object[] { id }, cancellationToken);
+    
+    // e não encontrou, retorna false para a Controller tratar como NotFound
+    if (produto == null) return false;
+
+    // Remove do DbContext e salva
+    _contexto.Produtos.Remove(produto);
+    await _contexto.SaveChangesasync(cancellationToken);
+
+    return true;
+  }
   
   //Método auxiliar para conversão de Entidade para DTO de Resposta
   private static ProdutoResponseDto MapToResponseDto(Produto produto)
@@ -113,7 +140,7 @@ public class ProdutoService : IProdutoService
       descricao = produto.Descricao,
       preco = produto.PrecoBase,
       categoria = produto.Categoria,
-      status = produto.Status
+      status = produto.Status.ToString()
     };
     
   }
