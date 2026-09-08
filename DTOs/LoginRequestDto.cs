@@ -23,8 +23,8 @@ public sealed class LoginRequestDto
     )]
 
     [StringLength(
+        maximumLength: 250,
         MinimumLength = 8,
-        maximumLength: 200,
         ErrorMessage = "Ops! Digite uma senha com no mínimo 8 caracteres"
     )]
     public string Senha {get; set;} = string.Empty;

@@ -1,11 +1,10 @@
-using Microsoft.EntityFrameWorkCore;
-using Franqueadora.API.Models;
-using Franqueadora.API.DTOs;
-using Franqueadora.API.Data;
-using Franqueadora.API.Core.Entites;
+using Microsoft.EntityFrameworkCore;
+using Franqueada.API.Models;
+using Franqueada.API.DTOs;
+using Franqueada.API.Data;
 
 
-namespace Franqueadora.API.Services;
+namespace Franqueada.API.Services;
 
 public class ProdutoService : IProdutoService
 {
@@ -16,23 +15,22 @@ public class ProdutoService : IProdutoService
     _contexto = contexto;
   }
 
-  public async Task<IReadCollection<ProdutoResponseDto>> ObterTodosAsync (
-    string? nome,
-    string? busca,
-    string? categoria,
-    StatusAtivo? status,
-    CancellationToken cancellationtoken = default
+  public async Task<ProdutoResponseDto> ObterTodasAsync (
+        string? nome,
+        string? categoria,
+        StatusAtivo status,
+        CancellationToken cancellationToken = default
   )
   {
     // Inicia a consulta como IQueryable 
     var query = _contexto.Produtos.AsNoTracking().AsQueryable();
 
     // Aplica o filtro de Nome se foi informado 
-    if (!string.IsNullOfWhiteSpace(nome))
-      query = query.Where(produto => produto.Nome.ToLower().Contains(nome.ToLower()));
+    if (!string.IsNullOrWhiteSpace(nome))
+      query = query.Where(produto => produto.nome.ToLower().Contains(nome.ToLower()));
       
     // Aplica o filtro de Categoria se foi informado
-    if (!string.IsNullOfWhiteSpace(categoria))
+    if (!string.IsNullOrWhiteSpace(categoria))
     {
       query = query.Where(produto => produto.Categoria.ToLower() == categoria.ToLower());
     };
@@ -50,14 +48,11 @@ public class ProdutoService : IProdutoService
         produto => produto.NomeProduto.Contains(termo) || produto.Categoria.Contains(busca)
       );
 
-    // Executa a consulta acumulada no banco de dados de uma só vez
-    var produtos = await query.ToListAsync(cancellationtoken);
-
     // Execução do banco SQL
-    List<Produto> produtos1 = await query.OrderByDescending(produtos1 => produtos1.I)
+    List<Produto> produtos = await query.OrderByDescending(produto => produto.Id_Produto).ToListAsync(cancellationtoken);
 
     // Mapeia a lista de entidades para DTOs de resposta
-    return produtos.Select(produto => MapToResponseDto(produto)).ToList().AsReadyOnly();
+    return produtos.Select(produtos => MapToResponseDto(produtos)).ToList().AsReadyOnly();
   }
   
   public async Task<ProdutoResponseDto?> ObterPorIdAsync(int id, CancellationToken cancellationtoken = default)
@@ -69,21 +64,23 @@ public class ProdutoService : IProdutoService
     return MapToResponseDto(produto);
   }
 
+  // Criar um produto novo
   public async Task<ProdutoRequestDto> CriarAsync(ProdutoRequestDto dto, CancellationToken cancellationtoken)
   {
     var produto = new Produto {
-      Nome = dto.Nome,
+      NomeProduto = dto.Nome,
       Descricao = dto.Descricao,
-      Preco_Base = dto.PrecoBase,
+      Preco = dto.PrecoBase,
       Categoria = dto.Categoria,
-      Status = dto.Status
+      Status = StatusAtivo.Ativado
     };
 
     _contexto.Produtos.Add(produto);
     await _contexto.SaveChangesAsync(cancellationtoken);
-    return MapToResponseDto(produto);
+    return produto;
   }
 
+  // Atualizar produto
   public async Task<bool> AltualizarAsync (int id, ProdutoRequestDto dto, CancellationToken cancellationtoken = default)
 
   {
@@ -102,12 +99,14 @@ public class ProdutoService : IProdutoService
     
   }
 
+  // Atualizar o status do produto
+
   public async Task<bool> AtualizarStatusAsync (int id, CancellationToken cancellationToken = default)
   {
     var produto = await _contexto.Produtos.FindAsync(new object[] {id}, cancellationToken);
 
     if (produto == null)
-    { return null; }
+    { return false; }
 
     produto.Status = !produto.Status;
 
@@ -115,6 +114,7 @@ public class ProdutoService : IProdutoService
     return true;
   }
 
+  // Remover produto
   public async Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default)
   {
     // Busca o produto no banco
@@ -135,13 +135,39 @@ public class ProdutoService : IProdutoService
   {
     return new ProdutoResponseDto
     {
-      id = produto.Id,
-      nome = produto.Nome,
-      descricao = produto.Descricao,
-      preco = produto.PrecoBase,
-      categoria = produto.Categoria,
-      status = produto.Status.ToString()
+      Id = produto.Id_Produto,
+      Nome = produto.NomeProduto,
+      Descricao = produto.Descricao,
+      PrecoBase = produto.Preco,
+      Categoria = produto.Categoria,
+      Status = produto.Status.ToString()
     };
     
   }
+
+    Task<IReadOnlyCollection<ProdutoResponseDto>> IProdutoService.ObterTodasAsync(string? nome, string? categoria, StatusAtivo status, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ProdutoResponseDto?> ObterIdAsync(int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<ProdutoResponseDto?> IProdutoService.CriarAsync(ProdutoRequestDto dto, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ProdutoResponseDto?> AtualizarAsync(int id, ProdutoRequestDto dto, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> AlternarStatusAsync(int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
 }

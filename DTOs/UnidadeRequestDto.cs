@@ -22,5 +22,5 @@ public sealed class UnidadeRequestDto
     /// Campo do ID da franquia
     /// </summary>
     [Range(1, int.MaxValue, ErrorMessage = "Por favor, informe o ID da franquia válido.")]
-    public int FranquiaId {get; set;} = int.Empty;
+    public int FranquiaId {get; set;}
 }

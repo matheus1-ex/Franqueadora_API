@@ -1,11 +1,11 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 namespace Franqueada.Api.Middleware;
 
 public sealed class RequestLogginMiddleWare
 {
     private readonly RequestDelegate _proximo;
-    private readonly Ilogger<RequestLogginMiddleWare> _logger;
+    private readonly ILogger<RequestLogginMiddleWare> _logger;
 
     public RequestLogginMiddleWare(
         RequestLogginMiddleWare proximo,

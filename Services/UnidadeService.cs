@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameWorkCore;
+using Microsoft.EntityFrameworkCore;
 using Franqueada.API.Models;
 using Franqueada.API.Data;
 using Franqueada.API.DTOs;
@@ -7,9 +7,9 @@ namespace Franqueada.API.Services;
 
 public class UnidadeService : IUnidadeService
     {
-        private readonly AppDbContext _contexto;
+        private readonly AppContext _contexto;
 
-        public UnidadeService(AppDbContext contexto)
+        public UnidadeService(AppContext contexto)
         {
             _contexto = contexto;
         }
@@ -104,4 +104,19 @@ public class UnidadeService : IUnidadeService
                 franquiaId = unidade.FranquiaId
             };
         }
+
+    public Task<IEnumerable<UnidadeResponseDto>> ObterTodasAsync(Nome_Unidade? nome_Unid, int id, StatusAtivo? status, Cod_Identificar? cod_Identificar, Endereco? endereco, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
     }
+
+    public Task<UnidadeResponsetDto> CriarAsync(UnidadeResquestDto criar, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task AtualizarStatusAsync(int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+}

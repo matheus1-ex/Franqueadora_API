@@ -13,7 +13,7 @@ public sealed class AuthService : IAuthService
 {
     private readonly AppContext _contexto;
 
-    public AuthService(AppContext context)
+    public AuthService(AppContext contexto)
     {
         _contexto = contexto;
     }
@@ -100,4 +100,61 @@ public sealed class AuthService : IAuthService
         };
     }
 
+    public Task<IReadOnlyCollection<Usuario>> ObterTodosAsync(Perfil? Nome, int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Usuario?> ObterTodosIdAsync(int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Usuario> CriarAsync(UsuarioCadastroDto dados, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+    public Task<IReadOnlyCollection<Usuario>> ObterTodosAsync(Perfil? Nome, int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Usuario?> ObterTodosIdAsync(int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Usuario> CriarAsync(UsuarioCadastroDto dados, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+    public Task<IReadOnlyCollection<Usuario>> ObterTodosAsync(Perfil? Nome, int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Usuario?> ObterTodosIdAsync(int id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<Usuario> CriarAsync(UsuarioCadastroDto dados, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 }

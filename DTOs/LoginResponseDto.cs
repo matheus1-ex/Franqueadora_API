@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
+using Franqueada.API.Models;
 namespace Franqueada.API.DTOs;
 public sealed class LoginResponseDto
 {
@@ -7,7 +8,7 @@ public sealed class LoginResponseDto
     /// Token Gerado JWT
     /// </summary>
     /// 
-    public string Token {get; set;}
+    public string? Token {get; set;}
 
     /// <summary>
     /// Data de Expiração
@@ -17,7 +18,7 @@ public sealed class LoginResponseDto
     /// <summary>
     /// Usuário
     /// </summary>
-    public string Nome {get; set;}
+    public string? Nome {get; set;}
 
     [EnumDataType(typeof(StatusAtivo), ErrorMessage = "Status do usuário inválido.")]
     public StatusAtivo status {get; set;}

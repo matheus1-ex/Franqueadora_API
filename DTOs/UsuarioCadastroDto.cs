@@ -11,8 +11,8 @@ public sealed class UsuarioCadastroDto
         ErrorMessage = "Informe seu nome para continuar."
     )]
     [StringLength(
+        maximumLength: 50,
         MinimumLength = 5,
-        maximumlenght = 50,
         ErrorMessage = "No minímo 5 caracteres"
     )]
 

@@ -11,7 +11,7 @@ public sealed class AppContext : DbContext
     /// <summary>
     /// Tabela de Usuários
     /// </summary>
-    public DbSet<Usuario> Usuarios {get; set;} 
+    public DbSet<Usuario> Usuarios  => Set<Usuario>(); 
 
     /// <summary>
     /// Tabela de Perfil
@@ -31,7 +31,7 @@ public sealed class AppContext : DbContext
     /// <summary>
     /// Tabela de Franqueadoras
     /// </summary>
-    public DbSet<Franqueadora> Franqueadoras {get; set;}
+    public DbSet<Franqueadores> Franqueadoras {get; set;}
 
     /// <summary>
     /// Tabela de Produtos
@@ -44,64 +44,62 @@ public sealed class AppContext : DbContext
         // ==================================
         // Usuários
         // ==================================
-        modelBuilder.Entity<Usuarios>(
+        modelBuilder.Entity<Usuario>(
             entidade =>
             {
                 entidade.ToTable("Usuários");
 
                 entidade.HasKey(usuario => usuario.Id);
 
-                entidade.Property(usuario => usuario.Nome).HasMaxLenght(50).IsRequired();
+                entidade.Property(usuario => usuario.Email).HasMaxLength(250).IsRequired();
 
-                entidade.Property(usuario => usuario.Email).HasMaxLenght(250).IsRequired();
-
-                entidade.Property(usuario => usuario.Senha).HasMaxLenght(250).IsRequired();
+                entidade.Property(usuario => usuario.SenhaHash).HasMaxLength(250).IsRequired();
             }
         );
 
         // ==================================
         // Perfis
         // ==================================
-        modelBuilder.Entity<Perfis>(
+        modelBuilder.Entity<Perfil>(
             entidade =>
             {
                 entidade.ToTable("Perfis");
 
                 entidade.HasKey(usuario => usuario.Id);
 
-                entidade.Property(usuario => usuario.Nome).HasMaxLenght(50).IsRequired();
+                entidade.Property(usuario => usuario.Nome).HasMaxLength(50).IsRequired();
             }
         );
         // ==========================
         // Unidades
         // ==========================
-        modelBuilder.Entity<Unidades>(
+        modelBuilder.Entity<Unidade>(
           entidade =>
           {
             entidade.ToTable("Unidades");
-            entidade.HasKey(unidade => unidade.Id);
+            entidade.HasKey(unidade => unidade.Id_Und);
 
-            entidade.Property(unidade => unidade.Nome_Unidade).HasMaxLenght(100).IsRequired();
+            entidade.Property(unidade => unidade.Nome_Unidade).HasMaxLength(100).IsRequired();
 
-            entidade.Property(unidade => unidade.Cod_Identificador).IsUnique();
+            entidade.Property(unidade => unidade.Cod_Identificador);
 
-            entidade.Property(unidade => unidade.Endereco).HasMax(250).IsRequired();
+            entidade.Property(unidade => unidade.Endereco).HasMaxLength(250).IsRequired();
 
           }
         );
         // ========================
         // Franquias
         // ========================
-        modelBuilder.Entity<Franquias>(
+        modelBuilder.Entity<Franquia>(
           entidade =>
           {
             entidade.ToTable("Franquias");
             
             entidade.HasKey(franquia => franquia.Id_Franquia);
             
-            entidade.Property(franquia => franquia.Nome_Marca).IsRequired().HasMax(200);
+            entidade.Property(franquia => franquia.Nome_Marca).IsRequired().HasMaxLength(200);
 
-            entidade.Property(franquia => franquia.Cnpj).HasMax(20).IsRequired();
+            entidade.Property(franquia => franquia.Cnpj).HasMaxLength(20).IsRequired();
 
             entidade.HasIndex(franquia => franquia.Status);
           }
@@ -109,16 +107,16 @@ public sealed class AppContext : DbContext
         // ====================
         // Franqueadoras
         // ====================
-        modelBuilder.Entity<Franqueadas>(
+        modelBuilder.Entity<Franqueadores>(
           entidade =>
           {
             entidade.ToTable("Franqueadoras");
             
             entidade.HasKey(franqueadora => franqueadora.Id_Franqueadora);
 
-            entidade.Property(franqueadora => franqueadora.Razao_Social).IsRequired().HasMax(200).IsUnique();
+            entidade.Property(franqueadora => franqueadora.Razao_Social).IsRequired().HasMaxLength(200);
 
-            entidade.Property(franqueadora => franqueadora.Cnpj).HasMax(20).IsRequired();
+            entidade.Property(franqueadora => franqueadora.Cnpj).HasMaxLength(20).IsRequired();
 
             entidade.HasIndex(franqueadora => franqueadora.Status);
           }
@@ -127,18 +125,18 @@ public sealed class AppContext : DbContext
         // ====================
         // Produtos
         // ====================
-        modelBuilder.Entity<Produtos>(
+        modelBuilder.Entity<Produto>(
           entidade =>
           {
             entidade.ToTable("Produtos");
             
             entidade.HasKey(produto => produto.Id_Produto);
 
-            entidade.Property(produto =>  produto.NomeProduto).IsRequired().HasMax(100).IsUnique();
+            entidade.Property(produto =>  produto.NomeProduto).IsRequired().HasMaxLength(100);
 
             entidade.Property(produto => produto.Preco).IsRequired().HasPrecision(18, 2);
 
-            entidade.Property(produto => produto.Categoria).IsRequired().HasMax(50).IsUnique();
+            entidade.Property(produto => produto.Categoria).IsRequired().HasMaxLength(50);
 
             entidade.Property(produto => produto.Status).IsRequired().HasDefaultValue(false);
           }
