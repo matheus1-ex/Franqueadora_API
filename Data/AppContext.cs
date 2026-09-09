@@ -1,12 +1,12 @@
-using System.Data.Common;
+
 using Franqueada.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Franqueada.API.Data;
 
-public sealed class AppContext : DbContext
+public sealed class AppDbContext : DbContext
 {
-    public AppContext(DbContextOptions<AppContext> options) : base(options) {}
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
 
     /// <summary>
     /// Tabela de Usuários
@@ -79,7 +79,7 @@ public sealed class AppContext : DbContext
             entidade.ToTable("Unidades");
             entidade.HasKey(unidade => unidade.Id_Und);
 
-            entidade.Property(unidade => unidade.Nome_Unidade).HasMaxLength(100).IsRequired();
+            entidade.Property(unidade => unidade.Nome).HasMaxLength(100).IsRequired();
 
             entidade.Property(unidade => unidade.Cod_Identificador);
 

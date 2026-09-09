@@ -4,11 +4,15 @@ using Franqueada.API.Models;
 namespace Franqueada.API.DTOs;
 public sealed class LoginResponseDto
 {
+    /// <summary>
+    /// Mensagem serve para dar um retorno claro sobre o resultado da tentativa de autenticação
+    /// </summary>/
+    public string Mensagem { get; set; } = string.Empty;
+
     ///<summary>
     /// Token Gerado JWT
     /// </summary>
-    /// 
-    public string? Token {get; set;}
+    public string Token {get; set;} = string.Empty;
 
     /// <summary>
     /// Data de Expiração
@@ -16,11 +20,18 @@ public sealed class LoginResponseDto
     public DateTime? DatadeExpiracao {get; set;} 
     
     /// <summary>
-    /// Usuário
+    /// Nome do usuário
     /// </summary>
     public string? Nome {get; set;}
 
-    [EnumDataType(typeof(StatusAtivo), ErrorMessage = "Status do usuário inválido.")]
-    public StatusAtivo status {get; set;}
+    /// <summary>
+    /// Email do usuário
+    /// </summary>
+    public string? EmailUsuario { get; set; }
+
+    /// <summary>
+    /// Status da Conta
+    /// </summary>
+    public bool StatusConta {get; set;}
 
 }

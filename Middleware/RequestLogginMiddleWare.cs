@@ -8,7 +8,7 @@ public sealed class RequestLogginMiddleWare
     private readonly ILogger<RequestLogginMiddleWare> _logger;
 
     public RequestLogginMiddleWare(
-        RequestLogginMiddleWare proximo,
+        RequestDelegate proximo,
         ILogger<RequestLogginMiddleWare> logger
     )
     {

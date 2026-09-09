@@ -1,32 +1,19 @@
 using System.ComponentModel.DataAnnotations;
-namespace Franqueadora.API.DTOs;
+namespace Franqueada.API.DTOs;
 public sealed class LoginRequestDto
 {
     /// <summary>
     /// Campo de Email
     /// </summary>
-    [Required(
-        ErrorMessage = "Email é obrigatório"
-    )]
-    [StringLength(
-        maximumLength: 250,
-        ErrorMessage = "Até no máximo 250 caracteres, não pode deixar em branco"
-    )]
+    [Required(ErrorMessage = "O e-mail é obrigatório.")]
+    [EmailAddress(ErrorMessage = "E-mail em formato inválido.")]
     public string Email {get; set;} = string.Empty;
 
     /// <summary>
     /// Campo da Senha
     /// </summary>
     /// 
-    [Required(
-        ErrorMessage = "Por favor, informe sua senha."
-    )]
-
-    [StringLength(
-        maximumLength: 250,
-        MinimumLength = 8,
-        ErrorMessage = "Ops! Digite uma senha com no mínimo 8 caracteres"
-    )]
+    [Required(ErrorMessage = "A senha é obrigatória.")]
     public string Senha {get; set;} = string.Empty;
     
 }

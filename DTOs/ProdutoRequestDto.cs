@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Franqueada.API.Models;
 
 namespace Franqueada.API.DTOs;
 public sealed class ProdutoRequestDto
@@ -18,5 +19,5 @@ public sealed class ProdutoRequestDto
     [StringLength(50, ErrorMessage = "A categoria deve ter no máximo 50 caracteres.")]
     public string Categoria {get; set;} = string.Empty;
 
-    public string Status {get; set;}
+    public StatusAtivo Status {get; set;}
 }

@@ -7,42 +7,18 @@ namespace Franqueada.API.Services;
 public interface IAuthService
 {
     /// <summary>
-    /// Vai pegar todas as informações da Classe Usuario
-    /// </summary>
-    /// <param name="Nome"></param>
-    /// <param name="id"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    Task<IReadOnlyCollection<Usuario>> ObterTodosAsync(
-        Perfil? Nome,
-        int id,
-        CancellationToken cancellationToken
-    );
+        /// Autentica o usuário e gera o Token JWT caso as credenciais sejam válidas.
+        /// </summary>
+        Task<LoginResponseDto> LoginAsync(LoginRequestDto dto, CancellationToken cancellationToken = default);
 
+        /// <summary>
+        /// Cadastra um novo usuário no sistema.
+        /// </summary>
+        Task<LoginResponseDto> RegistrarAsync(LoginRequestDto dto, CancellationToken cancellationToken = default);
 
-    /// <summary>
-    /// Vai Pegar todos os IDs do Usuário
-    /// </summary>
-    /// <param name="id"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-
-    Task<Usuario?> ObterTodosIdAsync(int id, CancellationToken cancellationToken);
-
-    /// <summary>
-    /// Criar Usuário
-    /// </summary>
-    /// <param name="dados"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-
-    Task<Usuario> CriarAsync
-    (
-        UsuarioCadastroDto dados,
-        CancellationToken cancellationToken
-    );
-
-    Task<bool> RemoverAsync(int id, CancellationToken cancellationToken = default);
-
+        /// <summary>
+        /// Valida se o token atual ainda é válido.
+        /// </summary>
+        Task<bool> ValidarTokenAsync(string token, CancellationToken cancellationToken = default);
 
 }
