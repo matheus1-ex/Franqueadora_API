@@ -61,6 +61,7 @@ public sealed class AppDbContext : DbContext
     public DbSet<ConfiguracaoRoyalty> ConfiguracoesRoyalty { get; set; }
 
     public DbSet<LancamentoRoyalty> LancamentosRoyalty { get; set; }
+
     public DbSet<Fornecedor> Fornecedores { get; set; }
   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -164,6 +165,15 @@ public sealed class AppDbContext : DbContext
             entidade.Property(produto => produto.Categoria).IsRequired().HasMaxLength(50);
 
             entidade.Property(produto => produto.Status).IsRequired().HasDefaultValue(false);
+
+            // Chave Estrangeira Opcional para Fornecedor
+            entidade.Property(p => p.FornecedorId).IsRequired(false);
+
+            // Relacionamento com Fornecedor
+            entidade.HasOne(p => p.Fornecedor)
+                .WithMany(f => f.Produtos)
+                .HasForeignKey(p => p.FornecedorId)
+                .OnDelete(DeleteBehavior.SetNull);
           }
         );
 
@@ -252,6 +262,115 @@ public sealed class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(itemVenda => itemVenda.ProdutoId)
                 .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        // ====================
+        // Configuração de Royalty
+        // ====================
+        modelBuilder.Entity<ConfiguracaoRoyalty>(entidade =>
+        {
+            entidade.ToTable("ConfiguracoesRoyalty");
+
+            entidade.HasKey(config => config.Id);
+
+            entidade.Property(config => config.PercentualRoyalty)
+                .IsRequired()
+                .HasPrecision(5, 2); // Permite até 999.99% (ex: 5.00 para 5%)
+
+            // Relacionamento com Unidade (1 Unidade tem 1 Configuração de Royalty)
+            entidade.HasOne(config => config.Unidade)
+                .WithMany()
+                .HasForeignKey(config => config.UnidadeId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Garante que cada unidade só tenha UMA configuração de royalty cadastrada
+            entidade.HasIndex(config => config.UnidadeId)
+                .IsUnique();
+        });
+
+        // ====================
+        // Lançamento de Royalty
+        // ====================
+        modelBuilder.Entity<LancamentoRoyalty>(entidade =>
+        {
+            entidade.ToTable("LancamentosRoyalty");
+
+            entidade.HasKey(lancamento => lancamento.Id);
+
+            entidade.Property(lancamento => lancamento.MesReferencia)
+                .IsRequired();
+
+            entidade.Property(lancamento => lancamento.AnoReferencia)
+                .IsRequired();
+
+            entidade.Property(lancamento => lancamento.FaturamentoPeriodo)
+                .IsRequired()
+                .HasPrecision(18, 2); // Precisão monetária (Ex: R$ 150.000,50)
+
+            entidade.Property(l => l.PercentualAplicado)
+                .IsRequired()
+                .HasPrecision(5, 2);  // Precisão percentual (Ex: 5.00%)
+
+            // Armazena o Enum StatusPagamento ("Pendente", "Pago", "Atrasado") como string no banco
+            entidade.Property(lancamento => lancamento.Status)
+                .IsRequired()
+                .HasConversion<string>();
+
+            entidade.Property(lancamento => lancamento.DataPagamento)
+                .IsRequired(false);
+
+            // Propriedade calculada em memória (não cria coluna no banco de dados)
+            entidade.Ignore(lancamento => lancamento.ValorDevido);
+
+            // Relacionamento com Unidade
+            entidade.HasOne(lancamento => lancamento.Unidade)
+                .WithMany()
+                .HasForeignKey(lancamento => lancamento.UnidadeId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Evita lançamentos duplicados para a mesma unidade no mesmo mês/ano
+            entidade.HasIndex(lancamento => new { lancamento.UnidadeId, lancamento.MesReferencia, lancamento.AnoReferencia })
+                .IsUnique();
+        });
+
+        // ====================
+        // Fornecedor
+        // ====================
+        modelBuilder.Entity<Fornecedor>(entidade =>
+        {
+            entidade.ToTable("Fornecedores");
+
+            entidade.HasKey(fornecedor => fornecedor.Id);
+
+            // Campos de Texto Obrigatórios e Limites de Tamanho
+            entidade.Property(fornecedor => fornecedor.NomeRazaoSocial)
+                .IsRequired()
+                .HasMaxLength(150);
+
+            entidade.Property(fornecedor => fornecedor.Cnpj)
+                .IsRequired()
+                .HasMaxLength(18); // Formato com máscara: "00.000.000/0000-00"
+
+            entidade.Property(fornecedor => fornecedor.Telefone)
+                .HasMaxLength(20);
+
+            entidade.Property(fornecedor => fornecedor.Email)
+                .HasMaxLength(100);
+
+            // Armazena o Enum StatusAtivo ("Ativado", "Desativado") como string no banco
+            entidade.Property(fornecedor => fornecedor.Status)
+                .IsRequired()
+                .HasConversion<string>();
+
+            // Garante que não existirão dois fornecedores com o mesmo CNPJ
+            entidade.HasIndex(fornecedor => fornecedor.Cnpj)
+                .IsUnique();
+
+            // Relacionamento 1 para N com Produtos (Um fornecedor fornece N produtos)
+            entidade.HasMany(fornecedor => fornecedor.Produtos)
+                .WithOne(produto => produto.Fornecedor)
+                .HasForeignKey(produto => produto.FornecedorId)
+                .OnDelete(DeleteBehavior.SetNull); // Se o fornecedor for excluído, o produto apenas fica com FornecedorId nulo
         });
 
     }

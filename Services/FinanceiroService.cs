@@ -97,7 +97,7 @@ public class FinanceiroService : IFinanceiroService
             {
                 Id = l.Id,
                 UnidadeId = l.UnidadeId,
-                NomeUnidade = l.Unidade?.NomeUnidade ?? string.Empty,
+                NomeUnidade = l.Unidade?.Nome ?? string.Empty,
                 MesReferencia = l.MesReferencia,
                 AnoReferencia = l.AnoReferencia,
                 FaturamentoPeriodo = l.FaturamentoPeriodo,
@@ -118,7 +118,7 @@ public class FinanceiroService : IFinanceiroService
             {
                 Id = l.Id,
                 UnidadeId = l.UnidadeId,
-                NomeUnidade = l.Unidade?.NomeUnidade ?? string.Empty,
+                NomeUnidade = l.Unidade?.Nome ?? string.Empty,
                 MesReferencia = l.MesReferencia,
                 AnoReferencia = l.AnoReferencia,
                 FaturamentoPeriodo = l.FaturamentoPeriodo,

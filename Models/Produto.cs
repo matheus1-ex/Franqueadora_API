@@ -7,4 +7,8 @@ public sealed class Produto
   public decimal Preco {get; set;}
   public string? Categoria {get; set;}
   public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
+
+  // Relacinameto com fornecedor
+  public Fornecedor? Fornecedor {get; set;}
+  public int? FornecedorId {get; set;}
 }
