@@ -5,7 +5,7 @@ public sealed class Franqueadores
   public int Id_Franqueadora {get; set;}
   public string? Razao_Social {get; set;}
   public string? Cnpj {get; set;}
-  public StatusAtivo Status {get; set;} = StatusAtivo.Desativado;
+  public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
 
   // Uma Franqueadora possui varias franquias
   public ICollection<Franquia> Franquias {get; set; } = new List<Franquia>();

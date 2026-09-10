@@ -7,7 +7,7 @@ using Franqueada.API.Data;
 
 namespace Franqueada.API.Services;
 
-public class ProdutoService : IProdutoService
+public sealed class ProdutoService : IProdutoService
 {
   public readonly AppDbContext _contexto;
   

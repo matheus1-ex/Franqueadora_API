@@ -4,7 +4,7 @@ public sealed class Franquia
   public int Id_Franquia {get; set;}
   public string? Nome_Marca {get; set;}
   public string? Cnpj {get; set;}
-  public StatusAtivo Status {get; set;} = StatusAtivo.Desativado;
+  public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
 
   // Chave estrangeira para Franqueadora
   public int FranqueadoraId {get; set;}

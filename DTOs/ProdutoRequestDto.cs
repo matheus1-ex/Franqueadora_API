@@ -13,7 +13,7 @@ public sealed class ProdutoRequestDto
 
     [Required(ErrorMessage = "O preço base é obrigatório.")]
     [Range(0.01, (double)decimal.MaxValue, ErrorMessage = "O preço deve ser maior que 0.")]
-    public double PrecoBase {get; set;}
+    public decimal PrecoBase {get; set;}
 
     [Required(ErrorMessage = "A categoria é obrigatória.")]
     [StringLength(50, ErrorMessage = "A categoria deve ter no máximo 50 caracteres.")]

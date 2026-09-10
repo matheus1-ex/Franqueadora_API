@@ -2,9 +2,9 @@ namespace Franqueada.API.Models;
 public sealed class Produto
 {
   public int Id_Produto {get; set;}
-  public string NomeProduto {get; set;}
+  public string NomeProduto {get; set;} = string.Empty;
   public string? Descricao {get; set;}
-  public double Preco {get; set;}
+  public decimal Preco {get; set;}
   public string? Categoria {get; set;}
-  public StatusAtivo Status {get; set;} = StatusAtivo.Desativado;
+  public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
 }

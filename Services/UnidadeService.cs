@@ -106,12 +106,7 @@ public class UnidadeService : IUnidadeService
             return true;
         }
 
-    public Task<IEnumerable<UnidadeResponseDto>> ObterTodasAsync(string? nome_Unid, int id, StatusAtivo? status, string? cod_Identificar, string? endereco, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    public async Task<UnidadeResponseDto> CriarAsync(UnidadeResquestDto criar, CancellationToken cancellationToken)
+    public Task<IEnumerable<UnidadeResponseDto>> ObterTodasAsync(int id, string? nome_Unid, StatusAtivo? status, string? cod_Identificar, string? endereco, CancellationToken cancellationToken)
     {
         throw new NotImplementedException();
     }
