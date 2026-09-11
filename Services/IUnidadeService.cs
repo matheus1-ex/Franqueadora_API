@@ -7,11 +7,8 @@ namespace Franqueada.API.Services;
 public interface IUnidadeService
 {
     Task<IEnumerable<UnidadeResponseDto>> ObterTodasAsync(
-        int id,
         string? nome_Unid,
         StatusAtivo? status,
-        string? cod_Identificar,
-        string? endereco,
         CancellationToken cancellationToken
         );
 

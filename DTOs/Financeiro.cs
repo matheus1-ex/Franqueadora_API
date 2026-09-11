@@ -1,20 +1,21 @@
 using Franqueada.API.Models;
 
 namespace Franqueada.API.DTOs;
-public class SalvarConfiguracaoRoyaltyDto
+
+public sealed class SalvarConfiguracaoRoyaltyDto
 {
     public int UnidadeId { get; set; }
     public decimal PercentualRoyalty { get; set; }
 }
 
-public class GerarRoyaltyDto
+public sealed class GerarRoyaltyDto
 {
     public int UnidadeId { get; set; }
     public int MesReferencia { get; set; }
     public int AnoReferencia { get; set; }
 }
 
-public class RoyaltyResponseDto
+public sealed class RoyaltyResponseDto
 {
     public int Id { get; set; }
     public int UnidadeId { get; set; }

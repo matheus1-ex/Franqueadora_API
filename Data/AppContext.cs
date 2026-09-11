@@ -63,6 +63,11 @@ public sealed class AppDbContext : DbContext
     public DbSet<LancamentoRoyalty> LancamentosRoyalty { get; set; }
 
     public DbSet<Fornecedor> Fornecedores { get; set; }
+
+    public DbSet<Chamado> Chamados { get; set; }
+
+
+    
   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -373,5 +378,41 @@ public sealed class AppDbContext : DbContext
                 .OnDelete(DeleteBehavior.SetNull); // Se o fornecedor for excluído, o produto apenas fica com FornecedorId nulo
         });
 
+
+        // ====================
+        // Chamado
+        // ====================
+        // Mapeamento da entidade Chamado
+            modelBuilder.Entity<Chamado>(entity =>
+            {
+                entity.ToTable("Chamados");
+
+                entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.Titulo)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(c => c.Descricao)
+                    .IsRequired();
+
+                entity.Property(c => c.Categoria)
+                    .IsRequired();
+
+                entity.Property(c => c.Prioridade)
+                    .IsRequired();
+
+                entity.Property(c => c.Status)
+                    .IsRequired();
+
+                entity.Property(c => c.DataAbertura)
+                    .IsRequired();
+
+                // Relacionamento: Um Chamado pertence a uma Unidade (1:N)
+                entity.HasOne(c => c.Unidade)
+                    .WithMany() // ou .WithMany(u => u.Chamados) se houver a coleção na classe Unidade
+                    .HasForeignKey(c => c.UnidadeId)
+                    .OnDelete(DeleteBehavior.Restrict); // Evita deletar a unidade em cascata caso haja chamados vinculados
+            });
     }
 } 

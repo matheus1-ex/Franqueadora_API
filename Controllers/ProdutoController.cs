@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Franqueada.API.DTOs;
 using Franqueada.API.Services;
 using Franqueada.API.Models;
-using Franqueada.API.Data;
 
 namespace Franqueada.API.Controllers;
 

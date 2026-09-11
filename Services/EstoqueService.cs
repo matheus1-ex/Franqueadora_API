@@ -7,16 +7,16 @@ using Franqueada.API.Data;
 namespace Franqueada.API.Services;
 public sealed class EstoqueService : IEstoqueService
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _contexto;
 
-        public EstoqueService(AppDbContext context)
+        public EstoqueService(AppDbContext contexto)
         {
-            _context = context;
+            _contexto = contexto;
         }
 
         public async Task<EstoqueResponseDto?> ObterSaldoAsync(int produtoId, int unidadeId, CancellationToken cancellationToken = default)
         {
-            var estoque = await _context.Estoques.Include(e => e.Produto)
+            var estoque = await _contexto.Estoques.Include(e => e.Produto)
                 .Include(estoque => estoque.Unidade)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(estoque => estoque.ProdutoId == produtoId && estoque.UnidadeId == unidadeId, cancellationToken);
@@ -28,7 +28,7 @@ public sealed class EstoqueService : IEstoqueService
 
         public async Task<IReadOnlyCollection<EstoqueResponseDto>> ObterItensAbaixoDoMinimoAsync(int? unidadeId, CancellationToken cancellationToken = default)
         {
-            var query = _context.Estoques
+            var query = _contexto.Estoques
                 .Include(estoque => estoque.Produto)
                 .Include(estoque => estoque.Unidade)
                 .AsNoTracking()
@@ -43,7 +43,7 @@ public sealed class EstoqueService : IEstoqueService
 
         public async Task<bool> MovimentarEstoqueAsync(MovimentarEstoqueDto dto, CancellationToken cancellationToken = default)
         {
-            var estoque = await _context.Estoques
+            var estoque = await _contexto.Estoques
                 .FirstOrDefaultAsync(estoque => estoque.ProdutoId == dto.ProdutoId && estoque.UnidadeId == dto.UnidadeId, cancellationToken);
 
             if (estoque == null)
@@ -59,7 +59,7 @@ public sealed class EstoqueService : IEstoqueService
                     Quantidade = 0,
                     EstoqueMinimo = 5 // Valor padrão
                 };
-                _context.Estoques.Add(estoque);
+                _contexto.Estoques.Add(estoque);
             }
 
             // Regra: Impedimento de saldo negativo
@@ -83,8 +83,8 @@ public sealed class EstoqueService : IEstoqueService
                 Observacao = dto.Observacao
             };
 
-            _context.MovimentacoesEstoque.Add(movimentacao);
-            await _context.SaveChangesAsync(cancellationToken);
+            _contexto.MovimentacoesEstoque.Add(movimentacao);
+            await _contexto.SaveChangesAsync(cancellationToken);
 
             return true;
         }

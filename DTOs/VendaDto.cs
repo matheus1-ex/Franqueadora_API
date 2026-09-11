@@ -1,18 +1,18 @@
 namespace Franqueada.API.DTOs;
 
-public class ItemVendaRequestDto
+public sealed class ItemVendaRequestDto
 {
     public int ProdutoId { get; set; }
     public int Quantidade { get; set; }
 }
 
-public class CriarVendaRequestDto
+public sealed class CriarVendaRequestDto
 {
     public int UnidadeId { get; set; }
     public List<ItemVendaRequestDto> Itens { get; set; } = new();
 }
 
-public class ItemVendaResponseDto
+public sealed class ItemVendaResponseDto
 {
     public int ProdutoId { get; set; }
     public string NomeProduto { get; set; } = string.Empty;
@@ -21,7 +21,7 @@ public class ItemVendaResponseDto
     public decimal Subtotal { get; set; }
 }
 
-public class VendaResponseDto
+public sealed class VendaResponseDto
 {
     public int Id { get; set; }
     public int UnidadeId { get; set; }

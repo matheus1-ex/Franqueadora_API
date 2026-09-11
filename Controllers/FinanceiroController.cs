@@ -20,7 +20,7 @@ public class FinanceiroController : ControllerBase
   [HttpPost("configurar-royalty")]
   public async Task<IActionResult> DefinirPercentual([FromBody] SalvarConfiguracaoRoyaltyDto dto, CancellationToken cancellationToken)
   {
-    await _financeiroService.DefinirPercentualRoyaltyAsync(dto, ct);
+    await _financeiroService.DefinirPercentualRoyaltyAsync(dto, cancellationToken);
     return NoContent();
   }
 

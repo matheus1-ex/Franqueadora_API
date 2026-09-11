@@ -1,6 +1,6 @@
 namespace Franqueada.API.Models;
 
-public class LancamentoRoyalty
+public sealed class LancamentoRoyalty
 {
     public int Id { get; set; }
     public int UnidadeId { get; set; }

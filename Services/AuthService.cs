@@ -29,7 +29,8 @@ public sealed class AuthService : IAuthService
     var tokenHandler = new JwtSecurityTokenHandler();
     
     // Sua chave secreta usada para assinar o token
-    var chaveSecreta = Encoding.ASCII.GetBytes("k9X7#m2P$vL4R8qW1zT");
+    var secretKey = _configuration["Jwt:SecretKey"] ?? "k9X7#m2P$vL4R8qW1zT";
+    var chaveSecreta = Encoding.ASCII.GetBytes(secretKey);
 
     // Define as informações contidas no Token (Claims)
     var tokenDescriptor = new SecurityTokenDescriptor
@@ -145,7 +146,6 @@ public sealed class AuthService : IAuthService
     if (string.IsNullOrWhiteSpace(token))
         return false;
 
-    var tokenHandler = new JwtSecurityTokenHandler();
     var secretKey = _configuration["Jwt:SecretKey"];
 
     if (string.IsNullOrEmpty(secretKey))
@@ -155,6 +155,7 @@ public sealed class AuthService : IAuthService
 
     try
     {
+        var tokenHandler = new JwtSecurityTokenHandler();
         // Tenta validar o token com os parâmetros de segurança definidos no appsettings
         tokenHandler.ValidateToken(token, new TokenValidationParameters
         {

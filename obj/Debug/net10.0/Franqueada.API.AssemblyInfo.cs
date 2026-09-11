@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Franqueada.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7c3ded62d1f0b48fa72f516d996c196f18ec789e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+880c3ad5343ac64ed7ec1f5240e0fcd1adc58191")]
 [assembly: System.Reflection.AssemblyProductAttribute("Franqueada.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Franqueada.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
