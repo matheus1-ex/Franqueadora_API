@@ -61,13 +61,14 @@ public class RelatorioService : IRelatorioService
         if (mes.HasValue) query = query.Where(r => r.MesReferencia == mes.Value);
         if (ano.HasValue) query = query.Where(r => r.AnoReferencia == ano.Value);
 
+        // Traz a lista para a memória para conseguir somar a propriedade calculada ValorDevido
         var royalties = await query.ToListAsync(cancellationToken);
 
         return new ResumoRoyaltiesDto
         {
-            TotalGerado = royalties.Sum(r => r.ValorCalculado),
-            TotalPago = royalties.Where(r => r.Pago).Sum(r => r.ValorCalculado),
-            TotalPendente = royalties.Where(r => !r.Pago).Sum(r => r.ValorCalculado),
+            TotalGerado = royalties.Sum(r => r.ValorDevido),
+            TotalPago = royalties.Where(r => r.Status == StatusPagamento.Pago).Sum(r => r.ValorDevido),
+            TotalPendente = royalties.Where(r => r.Status == StatusPagamento.Pendente).Sum(r => r.ValorDevido),
             QuantidadeLancamentos = royalties.Count
         };
     }
@@ -77,11 +78,11 @@ public class RelatorioService : IRelatorioService
     {
         return await _context.ItensVenda
             .AsNoTracking()
-            .GroupBy(i => new { i.ProdutoId, i.Produto!.Nome })
+            .GroupBy(i => new { i.ProdutoId, i.Produto!.NomeProduto })
             .Select(g => new ProdutoMaisVendidoDto
             {
                 ProdutoId = g.Key.ProdutoId,
-                NomeProduto = g.Key.Nome,
+                NomeProduto = g.Key.NomeProduto,
                 QuantidadeVendida = g.Sum(i => i.Quantidade),
                 TotalArrecadado = g.Sum(i => i.Subtotal)
             })
@@ -98,8 +99,8 @@ public class RelatorioService : IRelatorioService
             .Where(p => p.QuantidadeEstoque <= p.QuantidadeMinima)
             .Select(p => new EstoqueCriticoDto
             {
-                ProdutoId = p.Id,
-                NomeProduto = p.Nome,
+                ProdutoId = p.Id_Produto,
+                NomeProduto = p.NomeProduto,
                 QuantidadeAtual = p.QuantidadeEstoque,
                 QuantidadeMinima = p.QuantidadeMinima
             })

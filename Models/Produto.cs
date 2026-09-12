@@ -8,6 +8,10 @@ public sealed class Produto
   public string? Categoria {get; set;}
   public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
 
+  // Produto no estoque
+  public int QuantidadeEstoque {get; set;}
+  public int QuantidadeMinima {get; set;}
+
   // Relacinameto com fornecedor
   public Fornecedor? Fornecedor {get; set;}
   public int? FornecedorId {get; set;}

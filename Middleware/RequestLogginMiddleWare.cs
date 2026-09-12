@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-namespace Franqueada.Api.Middleware;
+
+namespace Franqueada.API.Middleware;
 
 public sealed class RequestLogginMiddleWare
 {

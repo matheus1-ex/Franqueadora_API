@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Security.AccessControl;
 using Microsoft.EntityFrameworkCore;
+using BCryptNet;
 
 namespace Franqueada.API.Services;
 
@@ -71,7 +72,7 @@ public sealed class AuthService : IAuthService
             }
 
             // Valida a Hash da Senha (BCrypt)
-            bool senhaValida = BCrypt.Net.BCrypt.Verify(dto.Senha, usuario.SenhaHash);
+            bool senhaValida = BCrypt.Verify(dto.Senha, usuario.SenhaHash);
             
             if (!senhaValida)
             {
@@ -123,7 +124,7 @@ public sealed class AuthService : IAuthService
             }
 
             // Criptografa a senha com BCrypt antes de salvar no banco
-            string senhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha);
+            string senhaHash = BCrypt.HashPassword(dto.Senha);
 
             var novoUsuario = new Usuario
             {
