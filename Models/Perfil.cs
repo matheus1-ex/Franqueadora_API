@@ -4,4 +4,6 @@ public sealed class Perfil
 {
     public int Id {get; set;}
     public string? Nome {get; set;}
+
+    public StatusAtivo Status { get; set; } = StatusAtivo.Ativado;
 }

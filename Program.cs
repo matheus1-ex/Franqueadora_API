@@ -82,6 +82,16 @@ public class Program
         var app = builder.Build();
 
         app.UseMiddleware<RequestLogginMiddleWare>();
+        app.MapGet("/", () => Results.Redirect("/swagger"));
+
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            
+            // Para SQLite em desenvolvimento, cria o banco/tabelas caso não existam
+            dbContext.Database.EnsureCreated();
+        }
 
         // 4. Middlewares
         if (app.Environment.IsDevelopment())
@@ -90,11 +100,10 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Franqueada API v1");
+                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Franqueada.API v1.0");
                 c.RoutePrefix = "swagger";
             });
         }
-
         app.UseAuthentication();
         app.UseAuthorization();
 

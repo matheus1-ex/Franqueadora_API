@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Franqueada.API.Models;
 using Franqueada.API.DTOs;
 using Franqueada.API.Services;
 
@@ -22,7 +23,7 @@ public class AuthController : ControllerBase
     {
         var resultado = await _authService.LoginAsync(dto, cancellationToken);
 
-        if (!resultado.StatusConta)
+        if (resultado.StatusConta == StatusAtivo.Desativado)
         {
             return BadRequest(resultado);
         }
@@ -37,7 +38,7 @@ public class AuthController : ControllerBase
     {
         var resultado = await _authService.RegistrarAsync(dto, cancellationToken);
 
-        if (!resultado.StatusConta)
+        if (resultado.StatusConta == StatusAtivo.Desativado)
         {
             return BadRequest(resultado);
         }
@@ -59,4 +60,35 @@ public class AuthController : ControllerBase
 
         return Ok(new { valido = true });
     }
+
+    // Busca pelo Id
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<LoginResponseDto>> ObterPorId(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        var usuario = await _authService.ObterPorIdAsync(id, cancellationToken);
+        if (usuario == null)
+            return NotFound();
+
+        return Ok(usuario);
+    }
+
+    // Remover o usuario
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> RemoverUsuarioAsync(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        bool removido = await _authService.RemoverUsuarioAsync(
+            id,
+            cancellationToken
+        );
+        if (!removido)
+        {
+            return NotFound(new { mensagem = $"O Usuário com {id} não foi encontrado"} );
+        }
+        return NoContent();
+    }
+
 }

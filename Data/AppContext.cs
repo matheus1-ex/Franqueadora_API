@@ -82,9 +82,14 @@ public sealed class AppDbContext : DbContext
 
                 entidade.HasKey(usuario => usuario.Id);
 
+                entidade.Property(usuario => usuario.Nome).IsRequired().HasMaxLength(40);
+
                 entidade.Property(usuario => usuario.Email).HasMaxLength(250).IsRequired();
 
                 entidade.Property(usuario => usuario.SenhaHash).HasMaxLength(250).IsRequired();
+
+                entidade.Property(usuario => usuario.Status).HasConversion<string>().HasMaxLength(30).IsRequired();
+
             }
         );
 
@@ -99,6 +104,8 @@ public sealed class AppDbContext : DbContext
                 entidade.HasKey(usuario => usuario.Id);
 
                 entidade.Property(usuario => usuario.Nome).HasMaxLength(50).IsRequired();
+
+                entidade.Property(usuario => usuario.Status).HasConversion<string>().IsRequired().HasMaxLength(45);
             }
         );
         // ==========================
@@ -169,15 +176,15 @@ public sealed class AppDbContext : DbContext
 
             entidade.Property(produto => produto.Categoria).IsRequired().HasMaxLength(50);
 
-            entidade.Property(produto => produto.Status).IsRequired().HasDefaultValue(false);
+            entidade.Property(produto => produto.Status).IsRequired().HasConversion<string>().HasDefaultValue(StatusAtivo.Desativado).HasSentinel((StatusAtivo)(-1));
 
             // Chave Estrangeira Opcional para Fornecedor
             entidade.Property(p => p.FornecedorId).IsRequired(false);
 
             // Relacionamento com Fornecedor
-            entidade.HasOne(p => p.Fornecedor)
-                .WithMany(f => f.Produtos)
-                .HasForeignKey(p => p.FornecedorId)
+            entidade.HasOne(produto => produto.Fornecedor)
+                .WithMany(fornecedor => fornecedor.Produtos)
+                .HasForeignKey(produto => produto.FornecedorId)
                 .OnDelete(DeleteBehavior.SetNull);
           }
         );
@@ -317,12 +324,9 @@ public sealed class AppDbContext : DbContext
                 .HasPrecision(5, 2);  // Precisão percentual (Ex: 5.00%)
 
             // Armazena o Enum StatusPagamento ("Pendente", "Pago", "Atrasado") como string no banco
-            entidade.Property(lancamento => lancamento.Status)
-                .IsRequired()
-                .HasConversion<string>();
+            entidade.Property(lancamento => lancamento.Status).IsRequired().HasConversion<string>();
 
-            entidade.Property(lancamento => lancamento.DataPagamento)
-                .IsRequired(false);
+            entidade.Property(lancamento => lancamento.DataPagamento).IsRequired(false);
 
             // Propriedade calculada em memória (não cria coluna no banco de dados)
             entidade.Ignore(lancamento => lancamento.ValorDevido);

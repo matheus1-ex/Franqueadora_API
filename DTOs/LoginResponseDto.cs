@@ -9,16 +9,8 @@ public sealed class LoginResponseDto
     /// </summary>/
     public string Mensagem { get; set; } = string.Empty;
 
-    ///<summary>
-    /// Token Gerado JWT
-    /// </summary>
-    public string Token {get; set;} = string.Empty;
+    public string? id {get; set;}
 
-    /// <summary>
-    /// Data de Expiração
-    /// </summary>
-    public DateTime? DatadeExpiracao {get; set;} 
-    
     /// <summary>
     /// Nome do usuário
     /// </summary>
@@ -30,8 +22,23 @@ public sealed class LoginResponseDto
     public string? EmailUsuario { get; set; }
 
     /// <summary>
+    /// Senha
+    /// </summary>
+    public string? Senha {get; set;}
+
+    ///<summary>
+    /// Token Gerado JWT
+    /// </summary>
+    public string Token {get; set;} = string.Empty;
+
+    /// <summary>
+    /// Data de Expiração
+    /// </summary>
+    public DateTime? DatadeExpiracao {get; set;} 
+
+    /// <summary>
     /// Status da Conta
     /// </summary>
-    public bool StatusConta {get; set;}
+    public StatusAtivo StatusConta {get; set;} = StatusAtivo.Ativado;
 
 }
