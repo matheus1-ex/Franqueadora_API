@@ -1,5 +1,6 @@
 using System.Reflection.Metadata.Ecma335;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using Franqueada.API.Models;
 using Franqueada.API.DTOs;
 using Franqueada.API.Data;
@@ -16,16 +17,23 @@ public sealed class ProdutoService : IProdutoService
     _contexto = contexto;
   }
 
-
-  private static ProdutoResponseDto MapToResponseDto(Produto produto)
+/// <summary>
+/// Converte um objeto do tipo Produto em um ProdutoResponseDto.
+/// </summary>
+/// <param name="produto"></param>
+/// <returns></returns>
+  private static ProdutoResponseDto MapToDto(Produto produto)
   {
       return new ProdutoResponseDto
       {
           Id = produto.Id_Produto,
           Nome = produto.NomeProduto,
+          Descricao = produto.Descricao ?? string.Empty,
           Categoria = produto.Categoria,
           PrecoBase = produto.Preco,
-          Status = produto.Status.ToString()
+          QuantidadeEstoque = produto.QuantidadeEstoque,
+          FornecedorID = produto.FornecedorId,
+          Status = produto.Status
       };
   }
     public async Task<bool> AlternarStatusAsync(int id, StatusAtivo status, CancellationToken cancellationToken)
@@ -53,25 +61,33 @@ public sealed class ProdutoService : IProdutoService
         produto.Descricao = dto.Descricao;
         produto.Preco = dto.PrecoBase;
         produto.Categoria = dto.Categoria;
-        produto.Status = dto.Status;
+        produto.Status = StatusAtivo.Ativado;
 
         await _contexto.SaveChangesAsync(cancellationToken);
-        return MapToResponseDto(produto);
+        return MapToDto(produto);
     }
 
-    public async Task<ProdutoResponseDto?> CriarAsync(ProdutoRequestDto dto, CancellationToken cancellationToken)
+    public async Task<List<ProdutoResponseDto>> CriarAsync(List<ProdutoRequestDto> dto, CancellationToken cancellationToken)
     {
-        var produto = new Produto {
-        NomeProduto = dto.Nome,
-        Descricao = dto.Descricao,
-        Preco = dto.PrecoBase,
-        Categoria = dto.Categoria,
-        Status = StatusAtivo.Ativado
-      };
+        var produtos = dto.Select(dto => new Produto
+        {
+            NomeProduto = dto.Nome,
+            Descricao = dto.Descricao,
+            Preco = dto.PrecoBase,
+            Categoria = dto.Categoria,
+            Status = StatusAtivo.Ativado,
+            QuantidadeEstoque = dto.QuantidadeEstoque,
+            FornecedorId = dto.FornecedorID
+        }).ToList();
 
-      _contexto.Produtos.Add(produto);
-      await _contexto.SaveChangesAsync(cancellationToken);
-      return MapToResponseDto(produto);
+        Console.WriteLine($"[DB DEBUG] Banco conectado: {_contexto.Database.GetDbConnection().ConnectionString}");
+
+        // Adiciona todos no banco e salva
+        _contexto.Produtos.AddRange(produtos);
+        await _contexto.SaveChangesAsync(cancellationToken);
+
+        // Mapeia as entidades salvas (com os IDs gerados) de volta para DTO
+        return produtos.Select(p => MapToDto(p)).ToList();
     }
 
     public async Task<ProdutoResponseDto?> ObterIdAsync(int id, CancellationToken cancellationToken)
@@ -79,7 +95,7 @@ public sealed class ProdutoService : IProdutoService
         var produto = await _contexto.Produtos.AsNoTracking().FirstOrDefaultAsync(produtos => produtos.Id_Produto == id, cancellationToken);
         if (produto == null) return null;
 
-        return MapToResponseDto(produto);
+        return MapToDto(produto);
     }
 
     public async Task<IReadOnlyCollection<ProdutoResponseDto>> ObterTodasAsync(
@@ -121,7 +137,7 @@ public sealed class ProdutoService : IProdutoService
       List<Produto> produtos = await query.OrderByDescending(produto => produto.Id_Produto).ToListAsync(cancellationToken);
 
       // Mapeia a lista de entidades para DTOs de resposta
-      return produtos.Select(MapToResponseDto).ToList().AsReadOnly();
+      return produtos.Select(MapToDto).ToList().AsReadOnly();
     }
 
     public async Task<bool> RemoverAsync(int id, CancellationToken cancellationToken)

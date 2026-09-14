@@ -1,4 +1,4 @@
-using System.Linq.Expressions;
+using System.Linq;
 using Franqueada.API.DTOs;
 using Franqueada.API.Models;
 
@@ -16,7 +16,7 @@ public interface IProdutoService
 
     public Task<ProdutoResponseDto?> ObterIdAsync (int id, CancellationToken cancellationToken);
 
-    public Task<ProdutoResponseDto?> CriarAsync (ProdutoRequestDto dto, CancellationToken cancellationToken);
+    public Task<List<ProdutoResponseDto>> CriarAsync (List<ProdutoRequestDto> dto, CancellationToken cancellationToken);
 
     public Task<ProdutoResponseDto?> AtualizarAsync (int id, ProdutoRequestDto dto, CancellationToken cancellationToken);
 

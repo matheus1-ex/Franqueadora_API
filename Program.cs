@@ -26,6 +26,7 @@ public class Program
         .AddJsonOptions(options =>
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
         });
 
         // 2. Configuração do Swagger compatível com Swashbuckle v10 / OpenAPI v2
@@ -78,11 +79,20 @@ public class Program
 
         // Serviços do Sistema 
         builder.Services.AddScoped<IAuthService, AuthService>();
+        builder.Services.AddScoped<IProdutoService, ProdutoService>();  
+        builder.Services.AddScoped<IEstoqueService, EstoqueService>();
+        builder.Services.AddScoped<IFinanceiroService, FinanceiroService>();
+        builder.Services.AddScoped<IFornecedorService, FornecedorService>();
+        builder.Services.AddScoped<IRelatorioService, RelatorioService>();
+        builder.Services.AddScoped<IUnidadeService, UnidadeService>();  
+        builder.Services.AddScoped<IVendaService, VendaService>();
 
         var app = builder.Build();
 
         app.UseMiddleware<RequestLogginMiddleWare>();
         app.MapGet("/", () => Results.Redirect("/swagger"));
+
+        Console.WriteLine($"---> O SQLite está gravando em: {System.IO.Path.GetFullPath("franqueadora.db")}");
 
 
         using (var scope = app.Services.CreateScope())

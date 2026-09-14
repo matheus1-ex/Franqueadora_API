@@ -1,3 +1,4 @@
+using Franqueada.API.Models;
 namespace Franqueada.API.DTOs;
 
 public sealed class ProdutoResponseDto
@@ -7,5 +8,8 @@ public sealed class ProdutoResponseDto
     public string Descricao { get; set; } = string.Empty;
     public decimal PrecoBase { get; set; }
     public string? Categoria { get; set; }
-    public string Status { get; set; } = string.Empty;
+    public StatusAtivo Status { get; set; } = StatusAtivo.Ativado;
+
+    public int FornecedorID {get; set;}
+    public int QuantidadeEstoque {get; set;}
 }

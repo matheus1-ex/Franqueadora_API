@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Franqueada.API.DTOs;
+using System.Linq;
 using Franqueada.API.Services;
 using Franqueada.API.Models;
+using Franqueada.API.Data;
 
 namespace Franqueada.API.Controllers;
 
@@ -57,20 +59,29 @@ public class ProdutoController : ControllerBase
     /// </summary>
     [HttpPost]
     public async Task<ActionResult<ProdutoResponseDto>> Criar(
-        [FromBody] ProdutoRequestDto dto,
+        [FromBody] List<ProdutoRequestDto> dto,
         CancellationToken cancellationToken
     )
     {
-        var novoProduto = await _produtoService.CriarAsync(dto, cancellationToken);
-
-        if (novoProduto == null)
+        var produtos = dto.Select(dto => new Produto
         {
-            return BadRequest("Não foi possível criar o produto.");
+            NomeProduto = dto.Nome,
+            Descricao = dto.Descricao,
+            Preco = dto.PrecoBase,
+            Categoria = dto.Categoria,
+            Status = StatusAtivo.Ativado,
+            QuantidadeEstoque = dto.QuantidadeEstoque,
+            FornecedorId = dto.FornecedorID
+        }).ToList();
+
+        if (dto == null || dto.Count == 0)
+        {
+            return BadRequest("Nenhum produto foi enviado no corpo da requisição.");
         }
-        return CreatedAtAction(
-            nameof(ObterPorId),
-            new {id = novoProduto.Id}, novoProduto
-        );
+
+        var resultado = await _produtoService.CriarAsync(dto, cancellationToken);
+
+        return Ok(resultado);
     }
 
     /// <summary>
@@ -79,7 +90,7 @@ public class ProdutoController : ControllerBase
     /// </summary>
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Atualizar(
-        [FromRoute] int id,
+        int id,
         [FromBody] ProdutoRequestDto dto,
         CancellationToken cancellationToken
     )

@@ -8,5 +8,5 @@ public class Fornecedor
     public string Email { get; set; } = string.Empty;
     public StatusAtivo Status { get; set; } = StatusAtivo.Ativado;
 
-    public List<Produto> Produtos { get; set; } = new();
-}
+    public ICollection<Produto> Produtos { get; set; } = new List<Produto>();
+} 

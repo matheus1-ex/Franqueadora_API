@@ -7,5 +7,4 @@ public sealed class Usuario
     public string? Email {get; set;}
     public string? SenhaHash {get; set;}
     public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
-    public string? Token {get; set;}
 }

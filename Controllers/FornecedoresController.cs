@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Franqueada.API.Services;
+using Franqueada.API.Models;
 
 namespace Franqueada.API.Controllers
 {
@@ -23,8 +24,8 @@ namespace Franqueada.API.Controllers
             [FromBody] FornecedorRequestDto dto,
             CancellationToken cancellationToken)
         {
-            var fornecedor = await _fornecedorService.CriarAsync(dto, cancellationToken);
-            return CreatedAtAction(nameof(ObterPorId), new { id = fornecedor.Id }, fornecedor);
+            var resultado = await _fornecedorService.CriarAsync(dto, cancellationToken);
+            return CreatedAtAction(nameof(ObterPorId), new { id = resultado.Id }, resultado);
         }
 
         /// <summary>
@@ -50,10 +51,9 @@ namespace Franqueada.API.Controllers
         /// </summary>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FornecedorResponseDto>>> ObterTodos(
-            [FromQuery] string? termo,
             CancellationToken cancellationToken)
         {
-            var fornecedores = await _fornecedorService.ObterTodosAsync(termo, cancellationToken);
+            var fornecedores = await _fornecedorService.ObterTodosAsync(cancellationToken);
             return Ok(fornecedores);
         }
 

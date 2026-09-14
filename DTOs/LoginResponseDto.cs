@@ -9,8 +9,6 @@ public sealed class LoginResponseDto
     /// </summary>/
     public string Mensagem { get; set; } = string.Empty;
 
-    public string? id {get; set;}
-
     /// <summary>
     /// Nome do usuário
     /// </summary>
@@ -24,12 +22,9 @@ public sealed class LoginResponseDto
     /// <summary>
     /// Senha
     /// </summary>
-    public string? Senha {get; set;}
+    public string Senha {get; set;} = string.Empty;
 
-    ///<summary>
-    /// Token Gerado JWT
-    /// </summary>
-    public string Token {get; set;} = string.Empty;
+    public string? Token {get; set;}
 
     /// <summary>
     /// Data de Expiração

@@ -14,5 +14,5 @@ public sealed class Produto
 
   // Relacinameto com fornecedor
   public Fornecedor? Fornecedor {get; set;}
-  public int? FornecedorId {get; set;}
+  public int FornecedorId {get; set;}
 }

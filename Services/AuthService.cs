@@ -31,8 +31,7 @@ public sealed class AuthService : IAuthService
     var tokenHandler = new JwtSecurityTokenHandler();
     
     // Sua chave secreta usada para assinar o token
-    var secretKey = _configuration["Jwt:SecretKey"] ?? "k9X$mP2!vL7QnR4#T8zY1xU5cB3vA6mK";
-    var chaveSecreta = Encoding.ASCII.GetBytes(secretKey);
+    var key = Encoding.UTF8.GetBytes(_configuration["Jwt:SecretKey"]!);
 
     // Define as informações contidas no Token (Claims)
     var tokenDescriptor = new SecurityTokenDescriptor
@@ -47,7 +46,7 @@ public sealed class AuthService : IAuthService
         Issuer = _configuration["Jwt:Issuer"],
         Audience = _configuration["Jwt:Audience"],
         SigningCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(chaveSecreta), 
+            new SymmetricSecurityKey(key), 
             SecurityAlgorithms.HmacSha256Signature
         )
     };
@@ -106,10 +105,11 @@ public sealed class AuthService : IAuthService
             {
                 StatusConta = StatusAtivo.Ativado,
                 Mensagem = "Login realizado com sucesso!",
-                Token = token,
-                DatadeExpiracao = expiracao,
                 Nome = usuario.Nome,
-                EmailUsuario = usuario.Email
+                Senha = usuario.Senha,
+                EmailUsuario = usuario.Email,
+                DatadeExpiracao = expiracao,
+                Token = token,
             };
         }
 
@@ -140,12 +140,10 @@ public sealed class AuthService : IAuthService
 
             var novoUsuario = new Usuario
             {
-                Id = dto.id,
                 Nome = dto.Nome,
                 Senha = dto.Senha,
                 Email = dto.Email,
                 SenhaHash = senhaHash,
-                Token = dto.Token,
                 Status = StatusAtivo.Ativado,
             };
 
@@ -170,22 +168,17 @@ public sealed class AuthService : IAuthService
 
     }
 
-    public async Task<bool> ValidarTokenAsync(string token, CancellationToken cancellationToken = default)
+    public async Task<(bool Sucesso, string Erro)> ValidarTokenAsync(string token, CancellationToken cancellationToken = default)
     {
-        // Se o token for nulo ou vazio, já é inválido
-    if (string.IsNullOrWhiteSpace(token))
-        return false;
+        var tokenHandler = new JwtSecurityTokenHandler();
 
-    var secretKey = _configuration["Jwt:SecretKey"];
+        var secretKey = _configuration["Jwt:SecretKey"] ?? throw new InvalidOperationException("A chave 'Jwt:SecretKey' não foi configurada no appsettings.json.");
 
-    if (string.IsNullOrEmpty(secretKey))
-        return false;
+        var key = Encoding.UTF8.GetBytes(secretKey);
 
-    var key = Encoding.ASCII.GetBytes(secretKey);
 
     try
     {
-        var tokenHandler = new JwtSecurityTokenHandler();
         // Tenta validar o token com os parâmetros de segurança definidos no appsettings
         tokenHandler.ValidateToken(token, new TokenValidationParameters
         {
@@ -196,16 +189,16 @@ public sealed class AuthService : IAuthService
             ValidateAudience = true,
             ValidAudience = _configuration["Jwt:Audience"],
             ValidateLifetime = true, // Garante que tokens expirados sejam rejeitados
-            ClockSkew = TimeSpan.Zero // Remove a tolerância de tempo padrão de 5 min para expiração
+            ClockSkew = TimeSpan.Zero // Remove a tolerância de tempo padrão 
         }, out SecurityToken validatedToken);
 
         // Se passou pela validação sem lançar exceção, o token é válido
-        return true;
+        return (true, string.Empty);
     }
-    catch
+    catch (Exception ex)
     {
         // Se o token expirou, foi alterado ou é inválido, cai no catch e retorna false
-        return false;
+        return (false, ex.Message);
     }
     }
 }

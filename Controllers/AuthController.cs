@@ -51,14 +51,14 @@ public class AuthController : ControllerBase
         [FromQuery] string token,
         CancellationToken cancellationToken)
     {
-        var ehValido = await _authService.ValidarTokenAsync(token, cancellationToken);
+        var (sucesso, erro) = await _authService.ValidarTokenAsync(token, cancellationToken);
 
-        if (!ehValido)
+        if (sucesso)
         {
-            return Unauthorized(new { mensagem = "Token inválido ou expirado." });
+            return Ok(new {valido = true });
         }
 
-        return Ok(new { valido = true });
+        return Unauthorized(new { mensagem = "Token inválido / expirado", detalhe = erro });
     }
 
     // Busca pelo Id

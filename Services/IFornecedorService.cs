@@ -4,7 +4,7 @@ namespace Franqueada.API.Services;
 
 public interface IFornecedorService
 {
-    Task<IReadOnlyCollection<FornecedorResponseDto>> ObterTodosAsync(string? termo, CancellationToken cancellationToken = default);
+    Task<List<FornecedorResponseDto>> ObterTodosAsync(CancellationToken cancellationToken);
 
     Task<FornecedorResponseDto?> ObterPorIdAsync(int id, CancellationToken cancellationToken = default);
 

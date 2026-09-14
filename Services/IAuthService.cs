@@ -21,7 +21,7 @@ public interface IAuthService
         /// <summary>
         /// Valida se o token atual ainda é válido.
         /// </summary>
-        Task<bool> ValidarTokenAsync(string token, CancellationToken cancellationToken);
+        Task<(bool Sucesso, string Erro)> ValidarTokenAsync(string token, CancellationToken cancellationToken);
 
         Task<bool> RemoverUsuarioAsync(int id, CancellationToken cancellationToken);
 

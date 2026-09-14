@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Franqueada.API.Models;
+using Microsoft.EntityFrameworkCore.Storage.Json;
 
 namespace Franqueada.API.DTOs;
 public sealed class ProdutoRequestDto
@@ -19,5 +20,11 @@ public sealed class ProdutoRequestDto
     [StringLength(50, ErrorMessage = "A categoria deve ter no máximo 50 caracteres.")]
     public string Categoria {get; set;} = string.Empty;
 
-    public StatusAtivo Status {get; set;}
+    [Required(ErrorMessage = "A Quantidade tem que ser maior do que 0")]
+    public int QuantidadeEstoque {get; set;} 
+
+    [Range(1, int.MaxValue, ErrorMessage = "Por favor, informe o ID do fornecedor válido.")]
+    public int FornecedorID {get; set;}
+
+    public StatusAtivo? Status {get; set;}
 }

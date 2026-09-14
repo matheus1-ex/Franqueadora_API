@@ -13,16 +13,19 @@ public class FornecedorService : IFornecedorService
             _context = context;
         }
 
-        public async Task<IReadOnlyCollection<FornecedorResponseDto>> ObterTodosAsync(string? termo, CancellationToken cancellationToken = default)
+        public async Task<List<FornecedorResponseDto>> ObterTodosAsync(CancellationToken cancellationToken)
         {
-            var query = _context.Fornecedores.AsNoTracking().AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(termo))
-                query = query.Where(f => f.NomeRazaoSocial.ToLower().Contains(termo.ToLower()));
-
-
-            var fornecedores = await query.ToListAsync(cancellationToken);
-            return fornecedores.Select(MapToDto).ToList().AsReadOnly();
+            return await _context.Fornecedores.Select
+            (fornecedor => new FornecedorResponseDto
+            {
+                Id = fornecedor.Id,
+                NomeRazaoSocial = fornecedor.NomeRazaoSocial,
+                Cnpj = fornecedor.Cnpj,
+                Telefone = fornecedor.Telefone,
+                Email = fornecedor.Email,
+                Status = fornecedor.Status,
+                TotalProdutos = fornecedor.Produtos.Count //total de produtos que o fornecedor tem
+            }).ToListAsync(cancellationToken);
         }
 
         public async Task<FornecedorResponseDto?> ObterPorIdAsync(int id, CancellationToken cancellationToken = default)
@@ -111,6 +114,7 @@ public class FornecedorService : IFornecedorService
             Cnpj = f.Cnpj,
             Telefone = f.Telefone,
             Email = f.Email,
-            Status = f.Status
+            Status = f.Status,
+            TotalProdutos = f.Produtos.Count
         };
     }

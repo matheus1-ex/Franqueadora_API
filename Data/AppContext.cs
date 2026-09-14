@@ -179,13 +179,13 @@ public sealed class AppDbContext : DbContext
             entidade.Property(produto => produto.Status).IsRequired().HasConversion<string>().HasDefaultValue(StatusAtivo.Desativado).HasSentinel((StatusAtivo)(-1));
 
             // Chave Estrangeira Opcional para Fornecedor
-            entidade.Property(p => p.FornecedorId).IsRequired(false);
+            entidade.Property(p => p.FornecedorId).IsRequired();
 
             // Relacionamento com Fornecedor
             entidade.HasOne(produto => produto.Fornecedor)
                 .WithMany(fornecedor => fornecedor.Produtos)
                 .HasForeignKey(produto => produto.FornecedorId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
           }
         );
 
@@ -372,8 +372,7 @@ public sealed class AppDbContext : DbContext
                 .HasConversion<string>();
 
             // Garante que não existirão dois fornecedores com o mesmo CNPJ
-            entidade.HasIndex(fornecedor => fornecedor.Cnpj)
-                .IsUnique();
+            entidade.HasIndex(fornecedor => fornecedor.Cnpj).IsUnique();
 
             // Relacionamento 1 para N com Produtos (Um fornecedor fornece N produtos)
             entidade.HasMany(fornecedor => fornecedor.Produtos)
