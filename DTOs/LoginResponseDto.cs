@@ -4,6 +4,14 @@ using Franqueada.API.Models;
 namespace Franqueada.API.DTOs;
 public sealed class LoginResponseDto
 {
+    ///
+    /// 
+    /// Aqui mostra os resultados do usuário
+    /// 
+    /// 
+    /// 
+    
+
     /// <summary>
     /// Mensagem serve para dar um retorno claro sobre o resultado da tentativa de autenticação
     /// </summary>/
@@ -24,6 +32,14 @@ public sealed class LoginResponseDto
     /// </summary>
     public string Senha {get; set;} = string.Empty;
 
+    /// <summary>
+    /// Tipo de usuario (Admin, Gestão, usr)
+    /// </summary>
+    public string TipoUsuario {get; set;} = string.Empty;
+
+    /// <summary>
+    /// Token gerado
+    /// </summary>
     public string? Token {get; set;}
 
     /// <summary>

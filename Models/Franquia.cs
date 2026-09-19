@@ -12,4 +12,7 @@ public sealed class Franquia
 
   // Uma Franquia possui várias unidades
   public ICollection<Unidade> Unidades {get; set;} = new List<Unidade>();
+
+  // Royalts
+  public decimal PercentualRoyalty { get; set; } = 5.0m;
 }

@@ -38,33 +38,47 @@ public class FinanceiroService : IFinanceiroService
 
         public async Task<RoyaltyResponseDto> CalcularEGerarRoyaltyAsync(GerarRoyaltyDto dto, CancellationToken cancellationToken = default)
         {
+            var unidade = await _context.Unidades
+            .Include(u => u.Franquia)
+        .FirstOrDefaultAsync(u => u.Id_Und == dto.UnidadeId, cancellationToken);
+
+
+        if (unidade == null)
+        {
+            throw new KeyNotFoundException("Unidade não encontrada.");   
+        }
+
             var config = await _context.ConfiguracoesRoyalty
                 .FirstOrDefaultAsync(c => c.UnidadeId == dto.UnidadeId, cancellationToken);
 
             if (config == null)
                 throw new InvalidOperationException("Percentual de royalty não configurado para esta unidade.");
 
-            // Calcula o faturamento somando as vendas do mês/ano
-            var faturamento = await _context.Vendas
-                .Where(v => v.UnidadeId == dto.UnidadeId &&
-                            v.DataVenda.Month == dto.MesReferencia &&
-                            v.DataVenda.Year == dto.AnoReferencia)
-                .SumAsync(v => v.ValorTotal, cancellationToken);
+            decimal percentualRoyalty = config?.PercentualRoyalty 
+            ?? unidade.Franquia?.PercentualRoyalty 
+            ?? 5.0m;
 
-            var lancamento = new LancamentoRoyalty
-            {
-                UnidadeId = dto.UnidadeId,
-                MesReferencia = dto.MesReferencia,
-                AnoReferencia = dto.AnoReferencia,
-                FaturamentoPeriodo = faturamento,
-                PercentualAplicado = config.PercentualRoyalty,
-                Status = StatusPagamento.Pendente
-            };
+        // Calcula o faturamento somando as vendas do mês/ano
+        var faturamento = await _context.Vendas
+            .Where(v => v.UnidadeId == dto.UnidadeId &&
+                        v.DataVenda.Month == dto.MesReferencia &&
+                        v.DataVenda.Year == dto.AnoReferencia)
+            .SumAsync(v => v.ValorTotal, cancellationToken);
 
-            _context.LancamentosRoyalty.Add(lancamento);
-            await _context.SaveChangesAsync(cancellationToken);
+        var lancamento = new LancamentoRoyalty
+        {
+            UnidadeId = dto.UnidadeId,
+            MesReferencia = dto.MesReferencia,
+            AnoReferencia = dto.AnoReferencia,
+            FaturamentoPeriodo = faturamento,
+            PercentualAplicado = percentualRoyalty, // Usa a taxa com fallback
+            Status = StatusPagamento.Pendente
+        };
 
-            return await ObterPorIdAsync(lancamento.Id, cancellationToken);
+        _context.LancamentosRoyalty.Add(lancamento);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return await ObterPorIdAsync(lancamento.Id, cancellationToken);
         }
 
         public async Task<bool> RegistrarPagamentoAsync(int lancamentoId, CancellationToken cancellationToken = default)

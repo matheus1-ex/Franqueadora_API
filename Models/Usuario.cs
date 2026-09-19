@@ -6,5 +6,8 @@ public sealed class Usuario
     public string Senha {get; set;} = string.Empty;
     public string? Email {get; set;}
     public string? SenhaHash {get; set;}
+
     public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
+    public int IdPerfil {get; set;}
+    public Perfil? Perfil {get; set;}
 }

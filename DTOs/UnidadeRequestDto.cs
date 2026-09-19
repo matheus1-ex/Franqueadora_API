@@ -10,6 +10,18 @@ public sealed class UnidadeRequestDto
     [StringLength(maximumLength: 100, ErrorMessage = "Digite o nome da unidade com até 100 caracteres.")]
     public string NomeUnidade {get; set;} = string.Empty;
 
+    [Required(ErrorMessage = "Digite o nome da cidade, onde sua loja deseja vender. ")]
+    [StringLength(maximumLength: 100)]
+    public string Cidade {get; set;} = string.Empty;
+
+    [Required(ErrorMessage = "Digite o Estado da sua cidade")]
+    [StringLength(maximumLength: 100)]
+    public string Estado {get; set;} = string.Empty;
+
+    [Required(ErrorMessage = "Digite o número de telefone da sua loja")]
+    [RegularExpression(@"^\(\d{2}\)\s?\d{4,5}-\d{4}$", ErrorMessage = "Informe um telefone no formato (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.")]
+    public string Telefone {get; set;} = string.Empty;
+
 
     /// <summary>
     /// Campo de endereço

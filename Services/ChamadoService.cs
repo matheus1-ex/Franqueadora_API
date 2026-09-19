@@ -18,7 +18,6 @@ public class ChamadoService : IChamadoService
         {
             var chamado = new Chamado
             {
-                UnidadeId = dto.UnidadeId,
                 Titulo = dto.Titulo,
                 Descricao = dto.Descricao,
                 Categoria = dto.Categoria,

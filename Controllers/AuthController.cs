@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Franqueada.API.Models;
 using Franqueada.API.DTOs;
 using Franqueada.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Franqueada.API.Controllers;
 
@@ -21,14 +22,12 @@ public class AuthController : ControllerBase
         [FromBody] LoginRequestDto dto,
         CancellationToken cancellationToken)
     {
-        var resultado = await _authService.LoginAsync(dto, cancellationToken);
+        var resposta = await _authService.LoginAsync(dto, cancellationToken);
 
-        if (resultado.StatusConta == StatusAtivo.Desativado)
-        {
-            return BadRequest(resultado);
-        }
+        if (resposta.StatusConta == StatusAtivo.Desativado)
+            return Unauthorized(resposta);
 
-        return Ok(resultado);
+        return Ok(resposta);
     }
 
     [HttpPost("registrar")]
@@ -74,7 +73,7 @@ public class AuthController : ControllerBase
         return Ok(usuario);
     }
 
-    // Remover o usuario
+    // Remover o usuario pelo id
     [HttpDelete("{id:int}")]
     public async Task<ActionResult> RemoverUsuarioAsync(
         int id,

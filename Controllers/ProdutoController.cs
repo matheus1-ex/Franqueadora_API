@@ -119,7 +119,7 @@ public class ProdutoController : ControllerBase
         {
             return NotFound(new {mensagem = $"Produto com ID {id} não foi encontrado."});
         }
-        return NoContent();
+        return Ok(sucesso);
     }
 
     [HttpDelete("{id:int}")]

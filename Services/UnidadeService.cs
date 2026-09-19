@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Franqueada.API.Models;
 using Franqueada.API.Data;
 using Franqueada.API.DTOs;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Franqueada.API.Services;
 
@@ -12,6 +13,58 @@ public class UnidadeService : IUnidadeService
     public UnidadeService(AppDbContext contexto)
     {
         _contexto = contexto;
+    }
+
+    private static UnidadeResponseDto MapToDto(Unidade unidade)
+  {
+      return new UnidadeResponseDto
+      {
+          Id_Und = unidade.Id_Und,
+          NomeUnidade = unidade.Nome,
+          Cidade = unidade.Cidade,
+          Estado = unidade.Estado,
+          Telefone = unidade.Telefone,
+          Endereco = unidade.Endereco,
+          CodIdentificador = unidade.Cod_Identificador,
+          FranquiaId = unidade.FranquiaId,
+          status = StatusAtivo.Ativado,
+      };
+  }
+
+    public async Task<UnidadeResponseDto?> AtualizarAsync(int id, UnidadeRequestDto dto, CancellationToken cancellationToken)
+    {
+        var unidade = await _contexto.Unidades.FirstOrDefaultAsync(u => u.Id_Und == id, cancellationToken);
+        if (unidade == null) return null;
+
+        // Valida se a franquia existe antes de atualizar
+        bool franquiaExiste = await _contexto.Franquias.AnyAsync(f => f.Id_Franquia == dto.FranquiaId, cancellationToken);
+        if (!franquiaExiste)
+        {
+            throw new Exception($"A franquia com ID {dto.FranquiaId} não existe.");
+        }
+
+        // Mapeamento dos campos
+        unidade.Nome = dto.NomeUnidade;
+        unidade.Cidade = dto.Cidade;
+        unidade.Estado = dto.Estado;
+        unidade.Telefone = dto.Telefone;
+        unidade.Endereco = dto.Endereco;
+        unidade.FranquiaId = dto.FranquiaId;
+        unidade.Status = StatusAtivo.Ativado;
+
+        await _contexto.SaveChangesAsync(cancellationToken);
+
+        return new UnidadeResponseDto
+        {
+            Id_Und = unidade.Id_Und,
+            NomeUnidade = unidade.Nome,
+            Cidade = unidade.Cidade,
+            Estado = unidade.Estado,
+            Telefone = unidade.Telefone,
+            Endereco = unidade.Endereco,
+            FranquiaId = unidade.FranquiaId,
+            status = StatusAtivo.Ativado,
+        };
     }
 
     public async Task AtualizarStatusAsync(int id, CancellationToken cancellationToken)
@@ -31,27 +84,24 @@ public class UnidadeService : IUnidadeService
             await _contexto.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<UnidadeResponseDto> CriarAsync(UnidadeRequestDto criar, CancellationToken cancellationToken)
+    public async Task<List<UnidadeResponseDto>> CriarAsync(List<UnidadeRequestDto> criar, CancellationToken cancellationToken)
     {
-        var unidade = new Unidade
+        var unidade = criar.Select(criar => new Unidade
             {
                 Nome = criar.NomeUnidade,
                 Endereco = criar.Endereco,
+                Cidade = criar.Cidade,       
+                Estado = criar.Estado,       
+                Telefone = criar.Telefone,
                 Cod_Identificador = $"UNI-{Guid.NewGuid().ToString()[..8].ToUpper()}",
+                FranquiaId = criar.FranquiaId,
                 Status = StatusAtivo.Ativado
-            };
+            }).ToList();
 
-            _contexto.Unidades.Add(unidade);
+            _contexto.Unidades.AddRange(unidade);
             await _contexto.SaveChangesAsync(cancellationToken);
 
-            return new UnidadeResponseDto
-            {
-                Id_Und = unidade.Id_Und,
-                Nome_Unidade = unidade.Nome,
-                Endereco = unidade.Endereco,
-                Cod_Identificador = unidade.Cod_Identificador,
-                status = unidade.Status
-            };
+            return unidade.Select(unidade =>MapToDto(unidade)).ToList();
     }
 
     public async Task<UnidadeResponseDto> ObterPorIdAsync(int id, CancellationToken cancellationToken)
@@ -62,9 +112,13 @@ public class UnidadeService : IUnidadeService
         .Select(u => new UnidadeResponseDto
         {
             Id_Und = u.Id_Und,
-            Nome_Unidade = u.Nome,
+            NomeUnidade = u.Nome,
+            Cidade = u.Cidade,
+            Estado = u.Estado,
+            Telefone = u.Telefone,
+            CodIdentificador = u.Cod_Identificador,
             Endereco = u.Endereco,
-            Cod_Identificador = u.Cod_Identificador,
+            FranquiaId = u.FranquiaId,
             status = u.Status
         })
         .FirstOrDefaultAsync(cancellationToken);
@@ -97,12 +151,26 @@ public class UnidadeService : IUnidadeService
                 .Select(unidade => new UnidadeResponseDto
                 {
                     Id_Und = unidade.Id_Und,
-                    Nome_Unidade = unidade.Nome,
+                    NomeUnidade = unidade.Nome,
+                    Cidade = unidade.Cidade,
+                    Estado = unidade.Estado,
+                    Telefone = unidade.Telefone,
                     Endereco = unidade.Endereco,
-                    Cod_Identificador = unidade.Cod_Identificador,
+                    CodIdentificador = unidade.Cod_Identificador,
+                    FranquiaId = unidade.FranquiaId,
                     status = unidade.Status
                 })
                 .ToListAsync(cancellationToken);
+    }
+
+    public async Task<bool> RemoverAsync(int id, CancellationToken cancellationToken)
+    {
+        var unidade = await _contexto.Unidades.FirstOrDefaultAsync(u => u.Id_Und == id, cancellationToken);
+        if (unidade == null) return false;
+
+        _contexto.Unidades.Remove(unidade);
+        await _contexto.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }
     

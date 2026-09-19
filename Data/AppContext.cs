@@ -58,16 +58,26 @@ public sealed class AppDbContext : DbContext
     /// </summary>
     public DbSet<ItemVenda> ItensVenda { get; set; }
 
+    /// <summary>
+    /// Tabela de Confiurações de Royalty
+    /// </summary>
     public DbSet<ConfiguracaoRoyalty> ConfiguracoesRoyalty { get; set; }
 
+    /// <summary>
+    /// Tabela de Lançamento de Royalty
+    /// </summary>
     public DbSet<LancamentoRoyalty> LancamentosRoyalty { get; set; }
 
+    /// <summary>
+    /// Tabela de Fornecedores
+    /// </summary>
     public DbSet<Fornecedor> Fornecedores { get; set; }
 
+    /// <summary>
+    /// Tabela de Chamados
+    /// </summary>
     public DbSet<Chamado> Chamados { get; set; }
 
-
-    
   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,6 +98,8 @@ public sealed class AppDbContext : DbContext
 
                 entidade.Property(usuario => usuario.SenhaHash).HasMaxLength(250).IsRequired();
 
+                entidade.HasOne(usuario => usuario.Perfil).WithMany().HasForeignKey(usuario => usuario.IdPerfil);
+
                 entidade.Property(usuario => usuario.Status).HasConversion<string>().HasMaxLength(30).IsRequired();
 
             }
@@ -101,11 +113,15 @@ public sealed class AppDbContext : DbContext
             {
                 entidade.ToTable("Perfis");
 
-                entidade.HasKey(usuario => usuario.Id);
+                entidade.HasKey(usuario => usuario.IdPerfil);
 
-                entidade.Property(usuario => usuario.Nome).HasMaxLength(50).IsRequired();
+                modelBuilder.Entity<Perfil>().HasData(
+                new Perfil { IdPerfil = 1, Tipo = "Administrador", Status = StatusAtivo.Ativado },
+                new Perfil { IdPerfil = 2, Tipo = "Gestão", Status = StatusAtivo.Ativado },
+                new Perfil { IdPerfil = 3, Tipo = "Usuário", Status = StatusAtivo.Ativado }
+            );
+            entidade.Property(perfil => perfil.Status).HasConversion<string>().IsRequired();
 
-                entidade.Property(usuario => usuario.Status).HasConversion<string>().IsRequired().HasMaxLength(45);
             }
         );
         // ==========================
@@ -119,9 +135,16 @@ public sealed class AppDbContext : DbContext
 
             entidade.Property(unidade => unidade.Nome).HasMaxLength(100).IsRequired();
 
-            entidade.Property(unidade => unidade.Cod_Identificador);
+            entidade.Property(unidade => unidade.Cidade).IsRequired().HasMaxLength(100);
+
+            entidade.Property(unidade => unidade.Estado).IsRequired().HasMaxLength(100);
 
             entidade.Property(unidade => unidade.Endereco).HasMaxLength(250).IsRequired();
+
+            entidade.Property(unidade => unidade.Telefone).IsRequired().HasMaxLength(12);
+
+            entidade.Property(unidade => unidade.Cod_Identificador);
+
 
           }
         );
@@ -139,7 +162,11 @@ public sealed class AppDbContext : DbContext
 
             entidade.Property(franquia => franquia.Cnpj).HasMaxLength(20).IsRequired();
 
-            entidade.HasIndex(franquia => franquia.Status);
+            entidade.Property(f => f.PercentualRoyalty)
+              .HasPrecision(18, 2)
+              .HasDefaultValue(5.0m);
+
+            entidade.Property(franquia => franquia.Status).IsRequired().HasConversion<string>();
           }
         );
         // ====================
@@ -156,7 +183,7 @@ public sealed class AppDbContext : DbContext
 
             entidade.Property(franqueadora => franqueadora.Cnpj).HasMaxLength(20).IsRequired();
 
-            entidade.HasIndex(franqueadora => franqueadora.Status);
+            entidade.Property(franqueadora => franqueadora.Status).IsRequired().HasConversion<string>();
           }
         );
 
@@ -176,7 +203,10 @@ public sealed class AppDbContext : DbContext
 
             entidade.Property(produto => produto.Categoria).IsRequired().HasMaxLength(50);
 
-            entidade.Property(produto => produto.Status).IsRequired().HasConversion<string>().HasDefaultValue(StatusAtivo.Desativado).HasSentinel((StatusAtivo)(-1));
+            entidade.Property(produto => produto.Status).IsRequired()
+            .HasConversion<string>()
+            .HasDefaultValue(StatusAtivo.Desativado)
+            .HasSentinel((StatusAtivo)(-1));
 
             // Chave Estrangeira Opcional para Fornecedor
             entidade.Property(p => p.FornecedorId).IsRequired();
@@ -197,17 +227,15 @@ public sealed class AppDbContext : DbContext
           {
             entidade.ToTable("Estoques");
             
-            entidade.HasKey(estoque => estoque.Id);
+           entidade.HasKey(e => e.Id);
 
-            entidade.Property(estoque =>  estoque.Quantidade).IsRequired().HasMaxLength(100);
+            entidade.HasOne(e => e.Produto)
+                  .WithMany()
+                  .HasForeignKey(e => e.ProdutoId);
 
-            entidade.Property(estoque => estoque.EstoqueMinimo).IsRequired().HasDefaultValue(5);
-
-            entidade.HasOne(estoque => estoque.Produto).WithMany().HasForeignKey(estoque => estoque.ProdutoId).OnDelete(DeleteBehavior.Restrict);
-
-            entidade.HasOne(estoque => estoque.Unidade).WithMany().HasForeignKey(estoque => estoque.UnidadeId).OnDelete(DeleteBehavior.Restrict);
-
-            entidade.HasIndex(estoque => new { estoque.ProdutoId, estoque.UnidadeId }).IsUnique();
+            entidade.HasOne(e => e.Unidade)
+                  .WithMany()
+                  .HasForeignKey(e => e.UnidadeId);
           }
         );
 

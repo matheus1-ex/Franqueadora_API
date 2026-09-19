@@ -2,7 +2,6 @@ using Franqueada.API.Models;
 namespace Franqueada.API.DTOs;
 public sealed class CriarChamadoDto
 {
-    public int UnidadeId { get; set; }
     public string Titulo { get; set; } = string.Empty;
     public string Descricao { get; set; } = string.Empty;
     public CategoriaChamado Categoria { get; set; }

@@ -3,11 +3,14 @@ public sealed class Unidade
 {
   public int Id_Und {get; set;}
   public string Nome {get; set;} = string.Empty;
+  public string Cidade {get; set;} = string.Empty;
+  public string Estado {get; set;} = string.Empty;
+  public string Telefone {get; set;} = string.Empty;
   public string? Cod_Identificador {get; set;}
   public StatusAtivo Status {get; set;} = StatusAtivo.Ativado;
   public string Endereco {get; set;} = string.Empty;
 
   //Chave estrangeira para Franquia
-  public int FranquiaID {get; set;}
+  public int FranquiaId {get; set;}
   public Franquia? Franquia {get; set;}
 }

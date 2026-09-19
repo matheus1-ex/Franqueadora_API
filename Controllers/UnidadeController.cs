@@ -7,7 +7,6 @@ using Franqueada.API.Services;
 
 namespace Franqueada_API.Controller;
 
-[Authorize]
 [ApiController]
 [Route("api/unidades")]
 public class UnidadeController : ControllerBase
@@ -22,8 +21,6 @@ public class UnidadeController : ControllerBase
     // ========================
     // GET api/unidades/
     // ========================
-    // Responsável por buscar e filtrar a unidade por status e nome
-
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UnidadeResponseDto>>> ObterTodas(
         [FromQuery] StatusAtivo status,
@@ -41,8 +38,6 @@ public class UnidadeController : ControllerBase
     // ========================
     // GET api/unidades/{id}
     // ========================
-    // Responsavél por buscar unidade específica por ID
-
     [HttpGet("{id:int}")]
     public async Task<ActionResult<Unidade>> ObterId(
         [FromRoute] int id,
@@ -59,7 +54,7 @@ public class UnidadeController : ControllerBase
             return NotFound(
                 new
                 {
-                    mensagem = $"A Unidade {id} não foi encntrada."
+                    mensagem = $"A Unidade {id} não foi encontrada."
                 }
             );
         }
@@ -69,28 +64,25 @@ public class UnidadeController : ControllerBase
     // ========================
     // POST api/unidades/
     // ========================
-    // Responsável por cadastrar uma nova unidade
-
     [HttpPost]
     public async Task<ActionResult<UnidadeResponseDto>> Adicionar(
-        [FromBody] UnidadeRequestDto adicionarUnidade,
+        [FromBody] List<UnidadeRequestDto> adicionarUnidade,
         CancellationToken cancellationToken
     )
     {
-        var unidadeCriada = await _unidadeService.CriarAsync(adicionarUnidade, cancellationToken);
-        return CreatedAtAction(
-            nameof(ObterTodas),
-            new
-            {
-                id = unidadeCriada.Id_Und
-            },
-            unidadeCriada
-        );
+        if (adicionarUnidade == null || adicionarUnidade.Count == 0)
+        {
+            return BadRequest("Nenhum item foi enviado no corpo da requisição.");
+        }
+
+        var resultado = await _unidadeService.CriarAsync(adicionarUnidade, cancellationToken);
+
+        return Ok(resultado);
     }
+
     // ===========================
     // PATCH api/unidades/{id}/status
     // ===========================
-    // Responsavel por altualizar o status de ativo e inativo
     [HttpPatch("{id:int}/status")]
     public async Task<IActionResult> AlternarStatus(
         [FromRoute] int id,
@@ -100,4 +92,36 @@ public class UnidadeController : ControllerBase
         await _unidadeService.AtualizarStatusAsync(id, cancellationtoken);
         return NoContent();
     }
-}
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<UnidadeResponseDto>> Atualizar(
+        int id,
+        [FromBody] UnidadeRequestDto dto,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var unidadeAtualizada = await _unidadeService.AtualizarAsync(id, dto, cancellationToken);
+            if (unidadeAtualizada == null)
+                return NotFound(new { mensagem = $"Unidade com ID {id} não foi encontrada." });
+
+            return Ok(unidadeAtualizada);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { mensagem = ex.Message });
+        }
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Remover(
+        int id,
+        CancellationToken cancellationToken)
+    {
+        bool removido = await _unidadeService.RemoverAsync(id, cancellationToken);
+        if (!removido)
+            return NotFound(new { mensagem = $"Unidade com ID {id} não foi encontrada." });
+
+        return NoContent();
+    }
+}   

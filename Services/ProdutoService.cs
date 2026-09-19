@@ -22,20 +22,6 @@ public sealed class ProdutoService : IProdutoService
 /// </summary>
 /// <param name="produto"></param>
 /// <returns></returns>
-  private static ProdutoResponseDto MapToDto(Produto produto)
-  {
-      return new ProdutoResponseDto
-      {
-          Id = produto.Id_Produto,
-          Nome = produto.NomeProduto,
-          Descricao = produto.Descricao ?? string.Empty,
-          Categoria = produto.Categoria,
-          PrecoBase = produto.Preco,
-          QuantidadeEstoque = produto.QuantidadeEstoque,
-          FornecedorID = produto.FornecedorId,
-          Status = produto.Status
-      };
-  }
     public async Task<bool> AlternarStatusAsync(int id, StatusAtivo status, CancellationToken cancellationToken)
     {
         var produto = await _contexto.Produtos.FindAsync(new object[] {id}, cancellationToken);
@@ -69,26 +55,63 @@ public sealed class ProdutoService : IProdutoService
 
     public async Task<List<ProdutoResponseDto>> CriarAsync(List<ProdutoRequestDto> dto, CancellationToken cancellationToken)
     {
-        var produtos = dto.Select(dto => new Produto
+        using var transaction = await _contexto.Database.BeginTransactionAsync(cancellationToken);
+        try
         {
-            NomeProduto = dto.Nome,
-            Descricao = dto.Descricao,
-            Preco = dto.PrecoBase,
-            Categoria = dto.Categoria,
-            Status = StatusAtivo.Ativado,
-            QuantidadeEstoque = dto.QuantidadeEstoque,
-            FornecedorId = dto.FornecedorID
-        }).ToList();
+            var produtos = dto.Select(item => new Produto
+            {
+                NomeProduto = item.Nome,
+                Descricao = item.Descricao,
+                Preco = item.PrecoBase,
+                Categoria = item.Categoria,
+                Status = StatusAtivo.Ativado,
+                QuantidadeEstoque = item.QuantidadeEstoque,
+                FornecedorId = item.FornecedorID
+            }).ToList();
 
-        Console.WriteLine($"[DB DEBUG] Banco conectado: {_contexto.Database.GetDbConnection().ConnectionString}");
+            _contexto.Produtos.AddRange(produtos);
+            await _contexto.SaveChangesAsync(cancellationToken);
 
-        // Adiciona todos no banco e salva
-        _contexto.Produtos.AddRange(produtos);
-        await _contexto.SaveChangesAsync(cancellationToken);
+            // Gera o registo de Estoque para a Unidade padrão (ex: UnidadeId = 1 ou vindo do DTO)
+            foreach (var prod in produtos)
+            {
+                _contexto.Estoques.Add(new Estoque
+                {
+                    ProdutoId = prod.Id_Produto,
+                    UnidadeId = 1, // Define a unidade padrão para o stock inicial
+                    Quantidade = prod.QuantidadeEstoque
+                });
+            }
 
-        // Mapeia as entidades salvas (com os IDs gerados) de volta para DTO
-        return produtos.Select(p => MapToDto(p)).ToList();
+            await _contexto.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+
+            return produtos.Select(p => MapToDto(p)).ToList();
+        }
+        catch
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
+        }
     }
+
+
+
+    private static ProdutoResponseDto MapToDto(Produto produto)
+  {
+      return new ProdutoResponseDto
+      {
+          Id = produto.Id_Produto,
+          Nome = produto.NomeProduto,
+          Descricao = produto.Descricao ?? string.Empty,
+          Categoria = produto.Categoria,
+          PrecoBase = produto.Preco,
+          QuantidadeEstoque = produto.QuantidadeEstoque,
+          FornecedorID = produto.FornecedorId,
+          Status = produto.Status
+      };
+  }
+
 
     public async Task<ProdutoResponseDto?> ObterIdAsync(int id, CancellationToken cancellationToken)
     {

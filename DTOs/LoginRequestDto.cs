@@ -3,6 +3,12 @@ namespace Franqueada.API.DTOs;
 public sealed class LoginRequestDto
 {
     /// <summary>
+    /// Campo de Id (define o tipo de usuário)
+    /// </summary>
+    [Required(ErrorMessage = "O Id define o tipo do usuário. ex: 1 - Admin, 2 - Gest, 3 - Usr")]
+    public int IdPerfil {get; set;}
+
+    /// <summary>
     /// Campo do Nome
     /// </summary>
     [Required(ErrorMessage = "O nome é obrigatório.")]

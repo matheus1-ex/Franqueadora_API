@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Franqueada.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260912150636_versao1.0")]
-    partial class versao10
+    [Migration("20260919022637_v7.0")]
+    partial class v70
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,16 +93,10 @@ namespace Franqueada.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("EstoqueMinimo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(5);
-
                     b.Property<int>("ProdutoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Quantidade")
-                        .HasMaxLength(100)
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("UnidadeId")
@@ -110,10 +104,9 @@ namespace Franqueada.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UnidadeId");
+                    b.HasIndex("ProdutoId");
 
-                    b.HasIndex("ProdutoId", "UnidadeId")
-                        .IsUnique();
+                    b.HasIndex("UnidadeId");
 
                     b.ToTable("Estoques", (string)null);
                 });
@@ -167,17 +160,19 @@ namespace Franqueada.API.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Razao_Social")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id_Franqueadora");
-
-                    b.HasIndex("Status");
 
                     b.ToTable("Franqueadoras", (string)null);
                 });
@@ -201,14 +196,19 @@ namespace Franqueada.API.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<decimal>("PercentualRoyalty")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(18, 2)
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue(5.0m);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id_Franquia");
 
                     b.HasIndex("FranqueadoraId");
-
-                    b.HasIndex("Status");
 
                     b.ToTable("Franquias", (string)null);
                 });
@@ -311,18 +311,40 @@ namespace Franqueada.API.Migrations
 
             modelBuilder.Entity("Franqueada.API.Models.Perfil", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("IdPerfil")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Nome")
+                    b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.HasKey("Id");
+                    b.Property<string>("Tipo")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("IdPerfil");
 
                     b.ToTable("Perfis", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdPerfil = 1,
+                            Status = "Ativado",
+                            Tipo = "Administrador"
+                        },
+                        new
+                        {
+                            IdPerfil = 2,
+                            Status = "Ativado",
+                            Tipo = "Gestão"
+                        },
+                        new
+                        {
+                            IdPerfil = 3,
+                            Status = "Ativado",
+                            Tipo = "Usuário"
+                        });
                 });
 
             modelBuilder.Entity("Franqueada.API.Models.Produto", b =>
@@ -339,7 +361,7 @@ namespace Franqueada.API.Migrations
                     b.Property<string>("Descricao")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("FornecedorId")
+                    b.Property<int>("FornecedorId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("NomeProduto")
@@ -357,10 +379,11 @@ namespace Franqueada.API.Migrations
                     b.Property<int>("QuantidadeMinima")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER")
-                        .HasDefaultValue(2);
+                        .HasColumnType("TEXT")
+                        .HasDefaultValue("Desativado");
 
                     b.HasKey("Id_Produto");
 
@@ -375,6 +398,11 @@ namespace Franqueada.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Cod_Identificador")
                         .HasColumnType("TEXT");
 
@@ -383,7 +411,12 @@ namespace Franqueada.API.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("FranquiaID")
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FranquiaId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Nome")
@@ -394,9 +427,14 @@ namespace Franqueada.API.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Telefone")
+                        .IsRequired()
+                        .HasMaxLength(12)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id_Und");
 
-                    b.HasIndex("FranquiaID");
+                    b.HasIndex("FranquiaId");
 
                     b.ToTable("Unidades", (string)null);
                 });
@@ -412,7 +450,15 @@ namespace Franqueada.API.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Perfil")
+                    b.Property<int>("IdPerfil")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Senha")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -421,10 +467,14 @@ namespace Franqueada.API.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("IdPerfil");
 
                     b.ToTable("Usuários", (string)null);
                 });
@@ -479,13 +529,13 @@ namespace Franqueada.API.Migrations
                     b.HasOne("Franqueada.API.Models.Produto", "Produto")
                         .WithMany()
                         .HasForeignKey("ProdutoId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Franqueada.API.Models.Unidade", "Unidade")
                         .WithMany()
                         .HasForeignKey("UnidadeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Produto");
@@ -550,7 +600,8 @@ namespace Franqueada.API.Migrations
                     b.HasOne("Franqueada.API.Models.Fornecedor", "Fornecedor")
                         .WithMany("Produtos")
                         .HasForeignKey("FornecedorId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
 
                     b.Navigation("Fornecedor");
                 });
@@ -559,11 +610,22 @@ namespace Franqueada.API.Migrations
                 {
                     b.HasOne("Franqueada.API.Models.Franquia", "Franquia")
                         .WithMany("Unidades")
-                        .HasForeignKey("FranquiaID")
+                        .HasForeignKey("FranquiaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Franquia");
+                });
+
+            modelBuilder.Entity("Franqueada.API.Models.Usuario", b =>
+                {
+                    b.HasOne("Franqueada.API.Models.Perfil", "Perfil")
+                        .WithMany()
+                        .HasForeignKey("IdPerfil")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Perfil");
                 });
 
             modelBuilder.Entity("Franqueada.API.Models.Venda", b =>

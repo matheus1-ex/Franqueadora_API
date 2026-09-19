@@ -10,5 +10,4 @@ public sealed class Estoque
     public Unidade? Unidade { get; set; }
 
     public int Quantidade { get; set; }
-    public int EstoqueMinimo { get; set; }
 }

@@ -14,7 +14,11 @@ public interface IUnidadeService
 
     Task<UnidadeResponseDto> ObterPorIdAsync(int id, CancellationToken cancellationToken);
 
-    Task<UnidadeResponseDto> CriarAsync(UnidadeRequestDto criar, CancellationToken cancellationToken);
+    Task<List<UnidadeResponseDto>> CriarAsync(List<UnidadeRequestDto> criar, CancellationToken cancellationToken);
 
     Task AtualizarStatusAsync(int id, CancellationToken cancellationToken);
+
+    Task<UnidadeResponseDto?> AtualizarAsync(int id, UnidadeRequestDto dto, CancellationToken cancellationToken);
+    
+    Task<bool> RemoverAsync(int id, CancellationToken cancellationToken);
 }

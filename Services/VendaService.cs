@@ -42,8 +42,17 @@ public async Task<VendaResponseDto> RegistrarVendaAsync(CriarVendaRequestDto dto
             var estoque = await _context.Estoques
                 .FirstOrDefaultAsync(e => e.ProdutoId == itemDto.ProdutoId && e.UnidadeId == dto.UnidadeId, cancellationToken);
 
-            if (estoque == null || estoque.Quantidade < itemDto.Quantidade)
-                throw new InvalidOperationException($"Estoque insuficiente para o produto '{produto.NomeProduto}'. Saldo disponível: {estoque?.Quantidade ?? 0}");
+            if (estoque == null)
+                {
+                    throw new InvalidOperationException($"Estoque insuficiente para o produto '{produto.NomeProduto}'. Saldo disponível: {estoque?.Quantidade ?? 0}");   
+                }
+            
+            if (estoque.Quantidade < itemDto.Quantidade)
+                {
+                 throw new InvalidOperationException(
+                $"Estoque insuficiente para '{produto.NomeProduto}'. Saldo atual: {estoque.Quantidade}, Solicitado: {itemDto.Quantidade}."
+                );   
+                }
 
             estoque.Quantidade -= itemDto.Quantidade;
 

@@ -2,8 +2,8 @@ namespace Franqueada.API.Models;
 
 public sealed class Perfil
 {
-    public int Id {get; set;}
-    public string? Nome {get; set;}
+    public int IdPerfil{get; set;}
+    public string? Tipo {get; set;}
 
     public StatusAtivo Status { get; set; } = StatusAtivo.Ativado;
 }

@@ -30,9 +30,21 @@ public class FornecedorService : IFornecedorService
 
         public async Task<FornecedorResponseDto?> ObterPorIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var fornecedor = await _context.Fornecedores.AsNoTracking().FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
-            return fornecedor == null ? null : MapToDto(fornecedor);
-        }
+            return await _context.Fornecedores
+            .AsNoTracking()
+            .Where(f => f.Id == id)
+            .Select(f => new FornecedorResponseDto
+            {
+                Id = f.Id,
+                NomeRazaoSocial = f.NomeRazaoSocial,
+                Email = f.Email,
+                Telefone = f.Telefone,
+                Cnpj = f.Cnpj,
+                Status = f.Status,
+                TotalProdutos = f.Produtos.Count
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+            }
 
         public async Task<FornecedorResponseDto> CriarAsync(FornecedorRequestDto dto, CancellationToken cancellationToken = default)
         {
@@ -93,10 +105,16 @@ public class FornecedorService : IFornecedorService
             var entidade = await _context.Fornecedores
                 .FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
 
-            // 2. Se não encontrou, retorna false (o Controller vai transformar isso em 404 NotFound)
             if (entidade == null)
             {
                 return false;
+            }
+
+            // Verficar antes de remover o fornecedor, se tem produto
+            var TemProduto = await _context.Produtos.AnyAsync(produto => produto.FornecedorId == id, cancellationToken);
+            if (TemProduto)
+            {
+                throw new InvalidOperationException("Existe produto cadastrado nesse fornecedor, não foi possível remover o fornecedor.");
             }
 
             // 3. Remove a entidade do DbContext e persiste no banco

@@ -77,18 +77,18 @@ public class RelatorioService : IRelatorioService
     public async Task<IEnumerable<ProdutoMaisVendidoDto>> ObterProdutosMaisVendidosAsync(int top, CancellationToken cancellationToken)
     {
         return await _context.ItensVenda
-            .AsNoTracking()
-            .GroupBy(i => new { i.ProdutoId, i.Produto!.NomeProduto })
-            .Select(g => new ProdutoMaisVendidoDto
-            {
-                ProdutoId = g.Key.ProdutoId,
-                NomeProduto = g.Key.NomeProduto,
-                QuantidadeVendida = g.Sum(i => i.Quantidade),
-                TotalArrecadado = g.Sum(i => i.Subtotal)
-            })
-            .OrderByDescending(x => x.QuantidadeVendida)
-            .Take(top)
-            .ToListAsync(cancellationToken);
+        .GroupBy(i => new { i.ProdutoId, i.Produto!.NomeProduto })
+        .Select(g => new ProdutoMaisVendidoDto
+        {
+            ProdutoId = g.Key.ProdutoId,
+            NomeProduto = g.Key.NomeProduto,
+            QuantidadeVendida = g.Sum(i => i.Quantidade),
+            // Multiplicação direta em vez de g.Sum(i => i.Subtotal)
+            TotalArrecadado = g.Sum(i => i.Quantidade * i.PrecoUnitario)
+        })
+        .OrderByDescending(p => p.TotalArrecadado)
+        .Take(top)
+        .ToListAsync(cancellationToken);
     }
 
     // 5. Estoque Crítico
